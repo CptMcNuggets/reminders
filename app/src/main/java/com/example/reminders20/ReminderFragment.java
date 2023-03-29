@@ -10,23 +10,23 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class ListFragment extends Fragment {
+public class ReminderFragment extends Fragment {
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_reminder, container, false);
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Button button = view.findViewById(R.id.open_reminder);
+        Button button = view.findViewById(R.id.return_to_list);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().beginTransaction().add(R.id.container, new ReminderFragment(), "reminder").addToBackStack("Fragment_list").commit();
+                getFragmentManager().popBackStack();
             }
         });
-
     }
 }
