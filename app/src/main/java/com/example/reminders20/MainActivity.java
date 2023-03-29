@@ -11,7 +11,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getFragmentManager().beginTransaction().replace(R.id.container, new ListFragment(), "fragment1").addToBackStack("Activity").commit();
+        getFragmentManager().beginTransaction().replace(R.id.container, new ListFragment(), "fragment1").addToBackStack("Fragment_List").commit();
     }
 
     @Override
