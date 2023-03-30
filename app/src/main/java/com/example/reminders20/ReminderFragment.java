@@ -1,5 +1,6 @@
 package com.example.reminders20;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,14 +19,14 @@ public class ReminderFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_reminder, container, false);
         return view;
     }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Button button = view.findViewById(R.id.return_to_list);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().popBackStack();
+                MainActivity activity = (MainActivity) getActivity();
+                activity.onBackPressed();
             }
         });
     }
