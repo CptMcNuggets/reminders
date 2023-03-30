@@ -25,8 +25,7 @@ public class ReminderFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity activity = (MainActivity) getActivity();
-                activity.onBackPressed();
+                ((MainActivity) getActivity()).onBackPressed();
             }
         });
     }
