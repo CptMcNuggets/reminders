@@ -11,7 +11,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getFragmentManager().beginTransaction().replace(R.id.container, new ListFragment(), "fragment_list").addToBackStack("Fragment_List").commit();
-    }
+        }
 
     @Override
     public void onBackPressed() {

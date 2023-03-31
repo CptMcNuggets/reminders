@@ -5,10 +5,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class ListFragment extends Fragment {
     @Nullable
@@ -20,13 +25,17 @@ public class ListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Button button = view.findViewById(R.id.open_reminder);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getFragmentManager().beginTransaction().add(R.id.container, new ReminderFragment(), "reminder").addToBackStack("Fragment_reminder").commit();
-            }
-        });
-
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        RemindersAdapter adapter = new RemindersAdapter();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+    }
+    public static List<Reminder> getTestList() {
+        Random rn = new Random();
+        List<Reminder> rv = new ArrayList<>();
+        for (int i = 0; i < 51; i++) {
+            rv.add(new Reminder(Integer.toString(rn.nextInt(100)), Integer.toString(rn.nextInt(100))));
+        }
+        return rv;
     }
 }
