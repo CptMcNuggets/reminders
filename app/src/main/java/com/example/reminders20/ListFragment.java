@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -25,17 +27,22 @@ public class ListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        FloatingActionButton fab_reshuffle = view.findViewById(R.id.fab_reshuffle);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         RemindersAdapter adapter = new RemindersAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+        adapter.updateReminders(getTestList());
+        fab_reshuffle.setOnClickListener(v -> {
+            adapter.updateReminders(getTestList());
+        });
     }
-    public static List<Reminder> getTestList() {
+    public List<Reminder> getTestList() {
         Random rn = new Random();
-        List<Reminder> rv = new ArrayList<>();
-        for (int i = 0; i < 51; i++) {
-            rv.add(new Reminder(Integer.toString(rn.nextInt(100)), Integer.toString(rn.nextInt(100))));
+        List<Reminder> testList = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
+            testList.add(new Reminder(Integer.toString(rn.nextInt(100)), Integer.toString(rn.nextInt(100))));
         }
-        return rv;
+        return testList;
     }
 }
