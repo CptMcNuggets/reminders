@@ -37,9 +37,12 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Reminder listItem = list.get(position);
         Context context = holder.itemView.getContext();
-        if (listItem.getIsOverdue() == true) {
-            holder.itemView.setBackgroundColor(context.getColor(R.color.red_alert));
-        }
+            if (listItem.IsOverdue() == true) {
+                holder.itemView.setBackgroundColor(context.getColor(R.color.red_alert));
+            }
+            else {
+                holder.itemView.setBackgroundColor(context.getColor(R.color.white));
+            }
         holder.title.setText(String.format("%s %s", context.getString(R.string.reminders_list_item_title), listItem.getTitle()));
         holder.description.setText(String.format("%s %s", context.getString(R.string.reminders_list_item_description), listItem.getDescription()));
     }

@@ -9,11 +9,9 @@ public class Reminder {
     public Reminder (String title, String description) {
         this.title = title;
         this.description = description;
-        if (Integer.parseInt(title) > 30) {
-            isOverdue = true;
-        }
+        isOverdue = Integer.parseInt(title) > 30;
     }
-    public boolean getIsOverdue() {
+    public boolean IsOverdue() {
         return isOverdue;
     }
     public String getTitle() {
