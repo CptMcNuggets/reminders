@@ -41,7 +41,9 @@ public class ListFragment extends Fragment {
         Random rn = new Random();
         List<Reminder> testList = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
-            testList.add(new Reminder(Integer.toString(rn.nextInt(100)), Integer.toString(rn.nextInt(100))));
+            int title = rn.nextInt(100);
+            int description = rn.nextInt(100);
+            testList.add(new Reminder(Integer.toString(title), Integer.toString(description)));
         }
         return testList;
     }

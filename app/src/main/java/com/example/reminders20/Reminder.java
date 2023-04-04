@@ -5,11 +5,17 @@ import androidx.annotation.NonNull;
 public class Reminder {
     private String title;
     private String description;
+    private boolean isOverdue;
     public Reminder (String title, String description) {
         this.title = title;
         this.description = description;
+        if (Integer.parseInt(title) > 30) {
+            isOverdue = true;
+        }
     }
-
+    public boolean getIsOverdue() {
+        return isOverdue;
+    }
     public String getTitle() {
         return title;
     }
