@@ -13,9 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class ListFragment extends Fragment {
     @Nullable
@@ -39,11 +45,15 @@ public class ListFragment extends Fragment {
     }
     public List<Reminder> getTestList() {
         Random rn = new Random();
+        int min = -60;
+        int max = 60;
         List<Reminder> testList = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
             int title = rn.nextInt(100);
             int description = rn.nextInt(100);
-            testList.add(new Reminder(Integer.toString(title), Integer.toString(description)));
+            int randomDays = rn.nextInt(max - min) + min;
+            LocalDateTime date = LocalDateTime.now().plusDays(randomDays);
+            testList.add(new Reminder(Integer.toString(title), Integer.toString(description), date));
         }
         return testList;
     }
