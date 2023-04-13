@@ -41,10 +41,9 @@ public class ListFragment extends Fragment {
         RemindersAdapter adapter = new RemindersAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-        adapter.updateReminders(getTestList());
-        adapter.updateDividers(getDividers());
+        adapter.updateItems(getTestList(),getDividers());
         fab_reshuffle.setOnClickListener(v -> {
-            adapter.updateReminders(getTestList());
+            adapter.updateItems(getTestList(),getDividers());
         });
     }
     public List<Divider> getDividers() {
@@ -59,7 +58,7 @@ public class ListFragment extends Fragment {
         int min = -6;
         int max = 6;
         List<Reminder> testList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 50; i++) {
             int title = rn.nextInt(100);
             int description = rn.nextInt(100);
             int randomDays = rn.nextInt(max - min) + min;

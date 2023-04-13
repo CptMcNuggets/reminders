@@ -2,12 +2,9 @@ package com.example.reminders20;
 
 import androidx.annotation.NonNull;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Date;
 
-public class Reminder {
+public class Reminder extends Items {
     private String title;
     private String description;
     private ZonedDateTime date;
