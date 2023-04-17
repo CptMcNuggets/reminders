@@ -8,6 +8,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -27,30 +31,39 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
         Collections.sort(reminderList, new Comparator<Reminder>() {
             @Override
             public int compare(Reminder o1, Reminder o2) {
-                Long timestamp1 = o1.getDate().toInstant().toEpochMilli();
-                Long timestamp2 = o2.getDate().toInstant().toEpochMilli();
+                Long timestamp1 = o1.getDate();
+                Long timestamp2 = o2.getDate();
                 return timestamp1.compareTo(timestamp2);
             }
         });
-        Date today = new Date();
-        list.add(dividerList.get(0));
+        Calendar todayDate = Calendar.getInstance();
+        todayDate.get(Calendar.DATE);
+        List<Items> todayList = new ArrayList<>();
+        List<Items> overdueList = new ArrayList<>();
+        List<Items> upcomingList = new ArrayList<>();
         for(int i = 0; i < reminderList.size(); i++) {
-            if(Date.from(reminderList.get(i).getDate().toInstant()).compareTo(today) == 0) {
-                this.list.add(reminderList.get(i));
+            Calendar reminderDate = Calendar.getInstance();
+            reminderDate.setTimeInMillis(reminderList.get(i).getDate());
+            if(reminderDate.get(Calendar.DATE) == todayDate.get(Calendar.DATE)) {
+                todayList.add(reminderList.get(i));
             }
-        }
-        list.add(dividerList.get(1));
-        for(int i = 0; i < reminderList.size(); i++) {
-            if(Date.from(reminderList.get(i).getDate().toInstant()).compareTo(today) > 0) {
-                this.list.add(reminderList.get(i));
+            if(reminderDate.get(Calendar.DATE) < todayDate.get(Calendar.DATE)) {
+                overdueList.add(reminderList.get(i));
             }
+            else upcomingList.add(reminderList.get(i));
         }
-        list.add(dividerList.get(2));
-        for(int i = 0; i < reminderList.size(); i++) {
-            if(Date.from(reminderList.get(i).getDate().toInstant()).compareTo(today) < 0) {
-                this.list.add(reminderList.get(i));
-            }
+        if (todayList.size() > 0) {
+            todayList.add(0, dividerList.get(0));
         }
+        if(upcomingList.size() > 0) {
+            upcomingList.add(0, dividerList.get(1));
+        }
+        if(overdueList.size() > 0) {
+            overdueList.add(0,dividerList.get(2));
+        }
+        list.addAll(todayList);
+        list.addAll(upcomingList);
+        list.addAll(overdueList);
         notifyDataSetChanged();
     }
     public abstract class ViewHolder extends RecyclerView.ViewHolder {
@@ -101,7 +114,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
                 Context context = holder.itemView.getContext();
                 holderReminder.title.setText(String.format("%s %s", context.getString(R.string.reminders_list_item_title), itemReminder.getTitle()));
                 holderReminder.description.setText(String.format("%s %s", context.getString(R.string.reminders_list_item_description), itemReminder.getDescription()));
-                holderReminder.date.setText(String.format("%s %s", context.getString(R.string.reminders_list_item_timestamp), itemReminder.getDate()));
+                holderReminder.date.setText(String.format("%s %s", context.getString(R.string.reminders_list_item_timestamp), new Date(itemReminder.getDate())));
                 break;
             case ITEM_DIVIDER:
                 DividerViewHolder holderDivider = (DividerViewHolder) holder;
