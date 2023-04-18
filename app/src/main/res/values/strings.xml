@@ -3,4 +3,7 @@
     <string name="reminders_list_item_title">Title:</string>
     <string name="reminders_list_item_description">Description:</string>
     <string name="reminders_list_item_timestamp">Date:</string>
+    <string name="divider_today">Today</string>
+    <string name="divider_tomorrow">Tomorrow</string>
+    <string name="divider_yesterday">Yesterday</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.reminders20;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,15 +32,16 @@ public class ListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Context context = getContext();
+        if (context == null) return;
+
         FloatingActionButton fab_reshuffle = view.findViewById(R.id.fab_reshuffle);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         RemindersAdapter adapter = new RemindersAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-        adapter.updateItems(getTestList(),getDividers());
-        fab_reshuffle.setOnClickListener(v -> {
-            adapter.updateItems(getTestList(),getDividers());
-        });
+        adapter.updateItems(context, getTestList());
+        fab_reshuffle.setOnClickListener(v -> adapter.updateItems(context, getTestList()));
     }
     public List<Divider> getDividers() {
         List<Divider> dividers = new ArrayList<>();
