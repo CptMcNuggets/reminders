@@ -2,8 +2,6 @@ package com.example.reminders20;
 
 import androidx.annotation.NonNull;
 
-import java.sql.Timestamp;
-import java.time.ZonedDateTime;
 import java.util.Date;
 
 public class Reminder extends Items {
@@ -21,8 +19,12 @@ public class Reminder extends Items {
     public String getDescription() {
         return description;
     }
-    public long getDate() {
+    public long getTimestamp() {
         return date;
+    }
+
+    public Date getDate() {
+        return new Date(date);
     }
     public void setDate(long date) {
         this.date = date;
