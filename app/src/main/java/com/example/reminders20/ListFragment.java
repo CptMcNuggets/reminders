@@ -50,8 +50,8 @@ public class ListFragment extends Fragment {
     }
     public List<Reminder> getTestList() {
         Random rn = new Random();
-        long min = -(1000 * 60 * 60 * 24 * 14);
-        long max = 1000 * 60 * 60 * 24 * 14;
+        long min = -(1000 * 60 * 60 * 24 * 20);
+        long max = 1000 * 60 * 60 * 24 * 20;
         List<Reminder> testList = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
             int title = rn.nextInt(100);

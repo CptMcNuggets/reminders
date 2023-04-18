@@ -44,13 +44,21 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
         for(int i = 0; i < reminderList.size(); i++) {
             Calendar reminderDate = Calendar.getInstance();
             reminderDate.setTimeInMillis(reminderList.get(i).getDate());
-            if(reminderDate.get(Calendar.DATE) == todayDate.get(Calendar.DATE)) {
-                todayList.add(reminderList.get(i));
+            if(reminderDate.get(Calendar.MONTH) > todayDate.get(Calendar.MONTH) ||
+                    reminderDate.get(Calendar.YEAR) > todayDate.get(Calendar.YEAR)) {
+                upcomingList.add(reminderList.get(i));
             }
-            if(reminderDate.get(Calendar.DATE) < todayDate.get(Calendar.DATE)) {
+            else if(reminderDate.get(Calendar.MONTH) < todayDate.get(Calendar.MONTH) ||
+                    reminderDate.get(Calendar.YEAR) < todayDate.get(Calendar.YEAR)) {
                 overdueList.add(reminderList.get(i));
             }
-            else upcomingList.add(reminderList.get(i));
+            else if(reminderDate.get(Calendar.DATE) > todayDate.get(Calendar.DATE)) {
+                upcomingList.add(reminderList.get(i));
+            }
+            else if(reminderDate.get(Calendar.DATE) < todayDate.get(Calendar.DATE)) {
+                overdueList.add(reminderList.get(i));
+            }
+            else todayList.add(reminderList.get(i));
         }
         if (todayList.size() > 0) {
             todayList.add(0, dividerList.get(0));
