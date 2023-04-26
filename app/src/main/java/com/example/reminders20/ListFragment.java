@@ -14,14 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-
 public class ListFragment extends Fragment {
     @Nullable
     @Override
@@ -34,34 +26,17 @@ public class ListFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Context context = getContext();
         if (context == null) return;
-
-        FloatingActionButton fab_reshuffle = view.findViewById(R.id.fab_reshuffle);
+        FloatingActionButton fab_new_reminder = view.findViewById(R.id.fab_new_reminder);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         RemindersAdapter adapter = new RemindersAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-        adapter.updateItems(context, getTestList());
-        fab_reshuffle.setOnClickListener(v -> adapter.updateItems(context, getTestList()));
-    }
-    public List<Divider> getDividers() {
-        List<Divider> dividers = new ArrayList<>();
-        dividers.add(new Divider("Today"));
-        dividers.add(new Divider("Upcoming"));
-        dividers.add(new Divider("Overdue"));
-        return dividers;
-    }
-    public List<Reminder> getTestList() {
-        Random rn = new Random();
-        long min = -(1000 * 60 * 60 * 24 * 20);
-        long max = 1000 * 60 * 60 * 24 * 20;
-        List<Reminder> testList = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
-            int title = rn.nextInt(100);
-            int description = rn.nextInt(100);
-            long randomDays = ThreadLocalRandom.current().nextLong(min, max);
-            long date = System.currentTimeMillis() + randomDays;
-            testList.add(new Reminder(Integer.toString(title), Integer.toString(description), date));
-        }
-        return testList;
+        adapter.updateItems(context, ((MainActivity) getActivity()).reminderDao.getAll());
+        fab_new_reminder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().beginTransaction().add(R.id.container, new NewReminderFragment(), "add_fragment").addToBackStack("add_fragment").commit();
+            }
+        });
     }
 }

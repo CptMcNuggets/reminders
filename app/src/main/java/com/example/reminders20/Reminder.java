@@ -1,17 +1,23 @@
 package com.example.reminders20;
 
-import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
+@Entity
 public class Reminder extends Items {
+    @ColumnInfo(name = "title")
     private String title;
+    @ColumnInfo(name = "description")
     private String description;
-    private long date;
-    public Reminder (String title, String description, long date) {
+    @PrimaryKey
+    private long timestamp;
+    public Reminder (String title, String description, long timestamp) {
         this.title = title;
         this.description = description;
-        this.date = date;
+        this.timestamp = timestamp;
     }
     public String getTitle() {
         return title;
@@ -19,19 +25,11 @@ public class Reminder extends Items {
     public String getDescription() {
         return description;
     }
+    public Date getDate() {
+        return new Date(timestamp);
+    }
     public long getTimestamp() {
-        return date;
+        return timestamp;
     }
 
-    public Date getDate() {
-        return new Date(date);
-    }
-    public void setDate(long date) {
-        this.date = date;
-    }
-    @NonNull
-    @Override
-    public String toString() {
-        return getTitle() + " " + getDescription();
-    }
 }

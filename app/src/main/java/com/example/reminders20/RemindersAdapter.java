@@ -66,6 +66,10 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
 
         notifyDataSetChanged();
     }
+    public void saveReminder(String title, String description) {
+        Reminder newOne = new Reminder(title,description,System.currentTimeMillis());
+
+    }
     public abstract class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(@NonNull View itemView) {
