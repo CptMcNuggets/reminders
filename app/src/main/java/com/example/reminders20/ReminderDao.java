@@ -7,15 +7,16 @@ import androidx.room.Query;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface ReminderDao{
     @Query("SELECT * FROM Reminder")
-    List<Reminder> getAll();
+    public Single<List<Reminder>> getAll();
     @Insert
-    Single<Reminder> insertReminder(Reminder reminder);
+    public Completable insertReminder(Reminder reminder);
     @Delete
-    Single<Reminder> deleteReminder(Reminder reminder);
+    public Completable deleteReminder(Reminder reminder);
 }
 
