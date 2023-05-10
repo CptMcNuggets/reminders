@@ -1,12 +1,15 @@
 package com.example.reminders20;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -19,7 +22,6 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
     final int ITEM_REMINDER = 0;
     final int ITEM_DIVIDER = 1;
     private final List<Items> list = new ArrayList<>();
-
 
     public void updateItems(Context context, List<Reminder> reminderList) {
         if (reminderList.size() == 0) return;
@@ -68,10 +70,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
 
         notifyDataSetChanged();
     }
-    public void saveReminder(String title, String description) {
-        Reminder newOne = new Reminder(title,description,System.currentTimeMillis());
 
-    }
     public abstract class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(@NonNull View itemView) {
@@ -80,6 +79,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
 
         abstract void updateUI(int position);
     }
+
     public class ReminderViewHolder extends RemindersAdapter.ViewHolder {
         TextView title;
         TextView description;
@@ -90,6 +90,20 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
             date = itemView.findViewById(R.id.date);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MainActivity context = (MainActivity) itemView.getContext();
+                    NewReminderFragment editReminder = new NewReminderFragment();
+                    Reminder reminder = (Reminder) list.get(getAdapterPosition());
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("timestamp", reminder.getTimestamp());
+                    editReminder.setArguments(bundle);
+                    context.getFragmentManager().beginTransaction().add(R.id.container, editReminder)
+                            .addToBackStack("edit")
+                            .commit();
+                }
+            });
         }
 
         @Override
@@ -116,6 +130,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
             divider.setText(itemDivider.getDividerName());
         }
     }
+
     @NonNull
     @Override
     public RemindersAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -126,19 +141,21 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
             case ITEM_DIVIDER:
                 View dividerView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_divider, parent, false);
                 return new DividerViewHolder(dividerView);
-            default: return null;
+            default:
+                return null;
         }
     }
+
     @Override
     public void onBindViewHolder(@NonNull RemindersAdapter.ViewHolder holder, int position) {
         holder.updateUI(position);
     }
+
     @Override
     public int getItemViewType(int position) {
         if (list.get(position) instanceof Reminder) {
             return ITEM_REMINDER;
-        }
-        else return ITEM_DIVIDER;
+        } else return ITEM_DIVIDER;
     }
 
     @Override

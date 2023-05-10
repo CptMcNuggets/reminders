@@ -17,7 +17,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment{
 
     private Disposable listDisposable = null;
 
@@ -63,4 +63,5 @@ public class ListFragment extends Fragment {
             listDisposable.dispose();
         }
     }
+
 }

@@ -16,6 +16,8 @@ import io.reactivex.rxjava3.core.Single;
 public interface ReminderDao{
     @Query("SELECT * FROM Reminder")
     public Flowable<List<Reminder>> getAll();
+    @Query("SELECT * FROM Reminder WHERE timestamp = :timestamp")
+    public  Single<Reminder> getReminderByTimestamp(long timestamp);
     @Insert
     public Completable insertReminder(Reminder reminder);
     @Delete

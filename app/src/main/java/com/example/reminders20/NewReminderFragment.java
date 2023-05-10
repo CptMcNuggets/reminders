@@ -1,7 +1,6 @@
 package com.example.reminders20;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +10,6 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.viewpager.widget.ViewPager;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.CompletableObserver;
@@ -30,12 +26,25 @@ public class NewReminderFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Bundle bundle = this.getArguments();
         MainActivity activity = (MainActivity) getActivity();
         Button saveButton = view.findViewById(R.id.save_button);
         EditText inputTitle = view.findViewById(R.id.input_title);
         EditText inputDescription = view.findViewById(R.id.input_description);
+        if(bundle != null) {
+           activity.reminderDao.getReminderByTimestamp(bundle.getLong("timestamp"))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(
+                            result -> {
+                                inputTitle.setText(result.getTitle());
+                                inputDescription.setText(result.getDescription());
+                            }, error -> {
+                                error.printStackTrace();
+                            }
+                );
+        }
         saveButton.setOnClickListener(v -> {
-            activity.reminderDao.insertReminder(new Reminder(inputTitle.getText().toString(),inputDescription.getText().toString(), System.currentTimeMillis()))
+            activity.reminderDao.insertReminder(new Reminder(inputTitle.getText().toString(), inputDescription.getText().toString(), System.currentTimeMillis()))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new CompletableObserver() {
                         @Override
