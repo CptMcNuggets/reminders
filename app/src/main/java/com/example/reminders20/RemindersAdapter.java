@@ -99,7 +99,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
                     Bundle bundle = new Bundle();
                     bundle.putLong("timestamp", reminder.getTimestamp());
                     editReminder.setArguments(bundle);
-                    context.getFragmentManager().beginTransaction().add(R.id.container, editReminder)
+                    context.getFragmentManager().beginTransaction().replace(R.id.container, editReminder)
                             .addToBackStack("edit")
                             .commit();
                 }

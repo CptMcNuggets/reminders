@@ -51,7 +51,7 @@ public class ListFragment extends Fragment{
         fab_new_reminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().beginTransaction().add(R.id.container, new NewReminderFragment(), "add_fragment").addToBackStack("add_fragment").commit();
+                getFragmentManager().beginTransaction().replace(R.id.container, new NewReminderFragment(), "add_fragment").addToBackStack("add_fragment").commit();
             }
         });
     }
