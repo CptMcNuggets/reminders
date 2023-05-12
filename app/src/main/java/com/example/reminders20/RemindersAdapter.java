@@ -3,8 +3,11 @@ package com.example.reminders20;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,7 +29,6 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
     final int ITEM_DIVIDER = 1;
     private final List<Items> list = new ArrayList<>();
     public void updateItems(Context context, List<Reminder> reminderList) {
-        if (reminderList.size() == 0) return;
         list.clear();
         Collections.sort(reminderList, (o1, o2) -> {
             Date timestamp1 = o1.getDate();
@@ -105,26 +107,35 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Reminder reminder = (Reminder) list.get(getAdapterPosition());
-                   activity.reminderDao.deleteReminder(reminder)
-                           .subscribeOn(Schedulers.io())
-                           .observeOn(AndroidSchedulers.mainThread())
-                           .subscribe(new CompletableObserver() {
-                               @Override
-                               public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+                    PopupMenu popupMenu = new PopupMenu(activity, itemView);
+                    popupMenu.getMenuInflater().inflate(R.menu.deletion_menu,popupMenu.getMenu());
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            Reminder reminder = (Reminder) list.get(getAdapterPosition());
+                            activity.reminderDao.deleteReminder(reminder)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new CompletableObserver() {
+                                        @Override
+                                        public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
 
-                               }
+                                        }
 
-                               @Override
-                               public void onComplete() {
+                                        @Override
+                                        public void onComplete() {
 
-                               }
+                                        }
 
-                               @Override
-                               public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                                        @Override
+                                        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
 
-                               }
-                           });
+                                        }
+                                    });
+                            return false;
+                        }
+                    });
+                    popupMenu.show();
                     return false;
                 }
             });
