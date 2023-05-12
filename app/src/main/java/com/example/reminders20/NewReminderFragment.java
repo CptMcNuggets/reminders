@@ -1,10 +1,13 @@
 package com.example.reminders20;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -44,7 +47,12 @@ public class NewReminderFragment extends Fragment {
                 );
         }
         saveButton.setOnClickListener(v -> {
-            activity.reminderDao.insertReminder(new Reminder(inputTitle.getText().toString(), inputDescription.getText().toString(), System.currentTimeMillis()))
+            long timestamp = System.currentTimeMillis();
+            long argTimestamp = bundle.getLong("timestamp", -1L);
+            if(argTimestamp > 0) {
+                timestamp = argTimestamp;
+            }
+            activity.reminderDao.insertReminder(new Reminder(inputTitle.getText().toString(), inputDescription.getText().toString(), timestamp))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new CompletableObserver() {
                         @Override
