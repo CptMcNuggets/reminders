@@ -46,8 +46,11 @@ public class NewReminderFragment extends Fragment {
         }
         saveButton.setOnClickListener(v -> {
             long timestamp = System.currentTimeMillis();
-            assert bundle != null;
-            long argTimestamp = bundle.getLong(Reminder.ARG_TIMESTAMP, -1L);
+
+            long argTimestamp = 0;
+            if (bundle != null) {
+                argTimestamp = bundle.getLong(Reminder.ARG_TIMESTAMP, -1L);
+            }
             if(argTimestamp > 0) {
                 timestamp = argTimestamp;
             }
@@ -61,7 +64,7 @@ public class NewReminderFragment extends Fragment {
 
                         @Override
                         public void onComplete() {
-                            getChildFragmentManager().popBackStack();
+                            activity.onBackPressed();
                         }
 
                         @Override
