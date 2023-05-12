@@ -30,6 +30,10 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
     private final List<Items> list = new ArrayList<>();
     public void updateItems(Context context, List<Reminder> reminderList) {
         list.clear();
+        if (reminderList.size() == 0) {
+            notifyDataSetChanged();
+            return;
+        }
         Collections.sort(reminderList, (o1, o2) -> {
             Date timestamp1 = o1.getDate();
             Date timestamp2 = o2.getDate();
