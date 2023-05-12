@@ -16,6 +16,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.CompletableObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ViewHolder> {
     final int ITEM_REMINDER = 0;
     final int ITEM_DIVIDER = 1;
@@ -68,7 +73,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
         notifyDataSetChanged();
     }
 
-    public abstract static class ViewHolder extends RecyclerView.ViewHolder {
+    public abstract class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -86,16 +91,42 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
             date = itemView.findViewById(R.id.date);
+            MainActivity activity = (MainActivity) itemView.getContext();
             itemView.setOnClickListener(v -> {
-                MainActivity context = (MainActivity) itemView.getContext();
                 NewReminderFragment editReminder = new NewReminderFragment();
                 Reminder reminder = (Reminder) list.get(getAdapterPosition());
                 Bundle bundle = new Bundle();
                 bundle.putLong(Reminder.ARG_TIMESTAMP, reminder.getTimestamp());
                 editReminder.setArguments(bundle);
-                context.getSupportFragmentManager().beginTransaction().replace(R.id.container, editReminder)
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, editReminder)
                         .addToBackStack("edit")
                         .commit();
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Reminder reminder = (Reminder) list.get(getAdapterPosition());
+                   activity.reminderDao.deleteReminder(reminder)
+                           .subscribeOn(Schedulers.io())
+                           .observeOn(AndroidSchedulers.mainThread())
+                           .subscribe(new CompletableObserver() {
+                               @Override
+                               public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+
+                               }
+
+                               @Override
+                               public void onComplete() {
+
+                               }
+
+                               @Override
+                               public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                               }
+                           });
+                    return false;
+                }
             });
         }
 

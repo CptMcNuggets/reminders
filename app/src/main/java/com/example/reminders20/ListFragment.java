@@ -43,11 +43,7 @@ public class ListFragment extends Fragment {
                 );
 
 
-        fab_new_reminder.setOnClickListener(v -> activity.getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container, new NewReminderFragment())
-                .addToBackStack(NewReminderFragment.class.getCanonicalName())
-                .commit());
+        fab_new_reminder.setOnClickListener(v -> activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, new NewReminderFragment(), "add_fragment").addToBackStack("add_fragment").commit());
     }
 
     @Override

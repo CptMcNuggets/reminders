@@ -1,6 +1,7 @@
 package com.example.reminders20;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -19,5 +20,7 @@ public interface ReminderDao{
     Single<Reminder> getReminderByTimestamp(long timestamp);
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     Completable insertReminder(Reminder reminder);
+    @Delete
+    Completable deleteReminder(Reminder reminder);
 }
 
