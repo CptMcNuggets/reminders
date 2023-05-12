@@ -5,11 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -22,7 +20,6 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
     final int ITEM_REMINDER = 0;
     final int ITEM_DIVIDER = 1;
     private final List<Items> list = new ArrayList<>();
-
     public void updateItems(Context context, List<Reminder> reminderList) {
         if (reminderList.size() == 0) return;
         list.clear();
@@ -71,7 +68,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
         notifyDataSetChanged();
     }
 
-    public abstract class ViewHolder extends RecyclerView.ViewHolder {
+    public abstract static class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -84,25 +81,21 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
         TextView title;
         TextView description;
         TextView date;
-
         public ReminderViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
             date = itemView.findViewById(R.id.date);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    MainActivity context = (MainActivity) itemView.getContext();
-                    NewReminderFragment editReminder = new NewReminderFragment();
-                    Reminder reminder = (Reminder) list.get(getAdapterPosition());
-                    Bundle bundle = new Bundle();
-                    bundle.putLong("timestamp", reminder.getTimestamp());
-                    editReminder.setArguments(bundle);
-                    context.getFragmentManager().beginTransaction().replace(R.id.container, editReminder)
-                            .addToBackStack("edit")
-                            .commit();
-                }
+            itemView.setOnClickListener(v -> {
+                MainActivity context = (MainActivity) itemView.getContext();
+                NewReminderFragment editReminder = new NewReminderFragment();
+                Reminder reminder = (Reminder) list.get(getAdapterPosition());
+                Bundle bundle = new Bundle();
+                bundle.putLong(Reminder.ARG_TIMESTAMP, reminder.getTimestamp());
+                editReminder.setArguments(bundle);
+                context.getSupportFragmentManager().beginTransaction().replace(R.id.container, editReminder)
+                        .addToBackStack("edit")
+                        .commit();
             });
         }
 

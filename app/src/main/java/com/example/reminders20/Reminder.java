@@ -1,7 +1,5 @@
 package com.example.reminders20;
 
-import android.os.Bundle;
-
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -11,16 +9,17 @@ import java.util.Date;
 @Entity
 public class Reminder extends Items {
     @ColumnInfo(name = "title")
-    private String title;
+    private final String title;
     @ColumnInfo(name = "description")
-    private String description;
+    private final String description;
     @PrimaryKey
-    private long timestamp;
+    private final long timestamp;
     public Reminder (String title, String description, long timestamp) {
         this.title = title;
         this.description = description;
         this.timestamp = timestamp;
     }
+    public static final String ARG_TIMESTAMP = "timestamp";
     public String getTitle() {
         return title;
     }

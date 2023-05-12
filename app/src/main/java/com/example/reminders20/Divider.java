@@ -1,7 +1,7 @@
 package com.example.reminders20;
 
 public class Divider extends Items {
-    private String dividerName;
+    private final String dividerName;
     public Divider(String dividerName) {
         this.dividerName = dividerName;
     }

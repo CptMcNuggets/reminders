@@ -1,18 +1,15 @@
 package com.example.reminders20;
 
-import android.app.Fragment;
-import android.content.Context;
-import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.CompletableObserver;
@@ -23,8 +20,7 @@ public class NewReminderFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_reminder, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_add_reminder, container, false);
     }
 
     @Override
@@ -35,7 +31,7 @@ public class NewReminderFragment extends Fragment {
         EditText inputTitle = view.findViewById(R.id.input_title);
         EditText inputDescription = view.findViewById(R.id.input_description);
         if(bundle != null) {
-           activity.reminderDao.getReminderByTimestamp(bundle.getLong("timestamp"))
+           activity.reminderDao.getReminderByTimestamp(bundle.getLong(Reminder.ARG_TIMESTAMP))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(
                             result -> {
@@ -48,7 +44,8 @@ public class NewReminderFragment extends Fragment {
         }
         saveButton.setOnClickListener(v -> {
             long timestamp = System.currentTimeMillis();
-            long argTimestamp = bundle.getLong("timestamp", -1L);
+            assert bundle != null;
+            long argTimestamp = bundle.getLong(Reminder.ARG_TIMESTAMP, -1L);
             if(argTimestamp > 0) {
                 timestamp = argTimestamp;
             }
@@ -62,7 +59,7 @@ public class NewReminderFragment extends Fragment {
 
                         @Override
                         public void onComplete() {
-                            getFragmentManager().popBackStack();
+                            getChildFragmentManager().popBackStack();
                         }
 
                         @Override

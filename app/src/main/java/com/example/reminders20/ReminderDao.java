@@ -10,18 +10,15 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface ReminderDao{
     @Query("SELECT * FROM Reminder")
-    public Flowable<List<Reminder>> getAll();
+    Flowable<List<Reminder>> getAll();
     @Query("SELECT * FROM Reminder WHERE timestamp = :timestamp")
-    public  Single<Reminder> getReminderByTimestamp(long timestamp);
+    Single<Reminder> getReminderByTimestamp(long timestamp);
     @Insert (onConflict = OnConflictStrategy.REPLACE)
-    public Completable insertReminder(Reminder reminder);
-    @Delete
-    public Completable deleteReminder(Reminder reminder);
+    Completable insertReminder(Reminder reminder);
 }
 
