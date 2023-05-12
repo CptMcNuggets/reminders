@@ -17,6 +17,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class NewReminderFragment extends Fragment {
+    private Disposable singleReminder = null;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -27,19 +28,20 @@ public class NewReminderFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Bundle bundle = this.getArguments();
         MainActivity activity = (MainActivity) getActivity();
+        if (activity == null) {
+            return;
+        }
         Button saveButton = view.findViewById(R.id.save_button);
         EditText inputTitle = view.findViewById(R.id.input_title);
         EditText inputDescription = view.findViewById(R.id.input_description);
         if(bundle != null) {
-           activity.reminderDao.getReminderByTimestamp(bundle.getLong(Reminder.ARG_TIMESTAMP))
+            singleReminder = activity.reminderDao.getReminderByTimestamp(bundle.getLong(Reminder.ARG_TIMESTAMP))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(
                             result -> {
                                 inputTitle.setText(result.getTitle());
                                 inputDescription.setText(result.getDescription());
-                            }, error -> {
-                                error.printStackTrace();
-                            }
+                            }, Throwable::printStackTrace
                 );
         }
         saveButton.setOnClickListener(v -> {
@@ -69,5 +71,13 @@ public class NewReminderFragment extends Fragment {
                     });
 
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (singleReminder != null) {
+            singleReminder.dispose();
+        }
     }
 }
