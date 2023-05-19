@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -25,8 +27,13 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ViewHolder> {
-    final int ITEM_REMINDER = 0;
-    final int ITEM_DIVIDER = 1;
+    public final int ITEM_REMINDER = 0;
+    public final int ITEM_DIVIDER = 1;
+
+    public List<Items> getList() {
+        return list;
+    }
+
     private final List<Items> list = new ArrayList<>();
     public void updateItems(Context context, List<Reminder> reminderList) {
         list.clear();
@@ -78,7 +85,6 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
 
         notifyDataSetChanged();
     }
-
     public abstract class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(@NonNull View itemView) {
