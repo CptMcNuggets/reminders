@@ -1,6 +1,7 @@
 package com.example.reminders20;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class ListFragment extends Fragment {
 
     private Disposable listDisposable = null;
+    private static final int THREE_SECONDS_IN_MILLIS = 3000;
 
     @Nullable
     @Override
@@ -54,25 +56,41 @@ public class ListFragment extends Fragment {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                activity.reminderDao.deleteReminder((Reminder) adapter.getList().get(viewHolder.getAdapterPosition()))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new CompletableObserver() {
-                            @Override
-                            public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+                int position = viewHolder.getAdapterPosition();
+                Reminder deletedReminder = (Reminder) adapter.getList().get(position);
+                adapter.deletedReminders.add(deletedReminder);
+                adapter.notifyItemChanged(position);
+                CountDownTimer countDownTimer = new CountDownTimer(THREE_SECONDS_IN_MILLIS, 1000) {
 
-                            }
+                    @Override
+                    public void onTick(long millisUntilFinished) {
 
-                            @Override
-                            public void onComplete() {
+                    }
 
-                            }
+                    @Override
+                    public void onFinish() {
+                        activity.reminderDao.deleteReminder(deletedReminder)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new CompletableObserver() {
+                                    @Override
+                                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
 
-                            @Override
-                            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                                    }
 
-                            }
-                        });
+                                    @Override
+                                    public void onComplete() {
+                                        adapter.deletedReminders.remove(deletedReminder);
+                                    }
+
+                                    @Override
+                                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                                    }
+                                });
+                    }
+                };
+                countDownTimer.start();
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);

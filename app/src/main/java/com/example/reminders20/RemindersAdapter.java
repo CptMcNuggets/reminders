@@ -29,12 +29,14 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ViewHolder> {
     public final int ITEM_REMINDER = 0;
     public final int ITEM_DIVIDER = 1;
+    public final int ITEM_UNDO = 2;
 
     public List<Items> getList() {
         return list;
     }
 
     private final List<Items> list = new ArrayList<>();
+    public List<Reminder> deletedReminders = new ArrayList<>();
     public void updateItems(Context context, List<Reminder> reminderList) {
         list.clear();
         if (reminderList.size() == 0) {
@@ -175,6 +177,23 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
             divider.setText(itemDivider.getDividerName());
         }
     }
+    public class DeletionViewHolder extends RemindersAdapter.ViewHolder {
+
+        public DeletionViewHolder(@NonNull View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        }
+
+        @Override
+        void updateUI(int position) {
+
+        }
+    }
 
     @NonNull
     @Override
@@ -186,6 +205,8 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
             case ITEM_DIVIDER:
                 View dividerView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_divider, parent, false);
                 return new DividerViewHolder(dividerView);
+            case ITEM_UNDO:
+                return new DeletionViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_undo,parent,false));
             default:
                 return null;
         }
@@ -198,9 +219,16 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
 
     @Override
     public int getItemViewType(int position) {
-        if (list.get(position) instanceof Reminder) {
-            return ITEM_REMINDER;
-        } else return ITEM_DIVIDER;
+        Object listItem = list.get(position);
+        if (listItem instanceof Reminder) {
+            if (deletedReminders.contains((Reminder) listItem)) {
+                return ITEM_UNDO;
+            } else {
+                return ITEM_REMINDER;
+            }
+        } else {
+            return ITEM_DIVIDER;
+        }
     }
 
     @Override
