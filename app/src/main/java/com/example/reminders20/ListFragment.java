@@ -19,11 +19,13 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.CompletableObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import kotlin.Pair;
 
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment implements AdapterCallback{
 
     private Disposable listDisposable = null;
     private static final int THREE_SECONDS_IN_MILLIS = 3000;
+    private RemindersAdapter adapter;
 
     @Nullable
     @Override
@@ -37,7 +39,7 @@ public class ListFragment extends Fragment {
         if (activity == null) return;
         FloatingActionButton fab_new_reminder = view.findViewById(R.id.fab_new_reminder);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-        RemindersAdapter adapter = new RemindersAdapter();
+        adapter = new RemindersAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -58,8 +60,6 @@ public class ListFragment extends Fragment {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
                 Reminder deletedReminder = (Reminder) adapter.getList().get(position);
-                adapter.deletedReminders.add(deletedReminder);
-                adapter.notifyItemChanged(position);
                 CountDownTimer countDownTimer = new CountDownTimer(THREE_SECONDS_IN_MILLIS, 1000) {
 
                     @Override
@@ -90,6 +90,8 @@ public class ListFragment extends Fragment {
                                 });
                     }
                 };
+                adapter.deletedReminders.add(new Pair<>(deletedReminder,countDownTimer));
+                adapter.notifyItemChanged(position);
                 countDownTimer.start();
             }
         };
@@ -112,4 +114,8 @@ public class ListFragment extends Fragment {
         }
     }
 
+    @Override
+    public void undoDeletion(int position) {
+        adapter.notifyItemChanged(position);
+    }
 }

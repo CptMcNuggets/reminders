@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 public class Reminder extends Items {
@@ -33,4 +34,16 @@ public class Reminder extends Items {
         return timestamp;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Reminder)) return false;
+        Reminder reminder = (Reminder) o;
+        return timestamp == reminder.timestamp;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, description, timestamp);
+    }
 }

@@ -2,6 +2,7 @@ package com.example.reminders20;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,18 +26,24 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.CompletableObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import kotlin.Pair;
 
 public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ViewHolder> {
     public final int ITEM_REMINDER = 0;
     public final int ITEM_DIVIDER = 1;
     public final int ITEM_UNDO = 2;
+    private AdapterCallback adapterCallback;
+
+    public RemindersAdapter(AdapterCallback adapterCallback) {
+        this.adapterCallback = adapterCallback;
+    }
 
     public List<Items> getList() {
         return list;
     }
 
     private final List<Items> list = new ArrayList<>();
-    public List<Reminder> deletedReminders = new ArrayList<>();
+    public List<Pair<Reminder, CountDownTimer>> deletedReminders = new ArrayList<>();
     public void updateItems(Context context, List<Reminder> reminderList) {
         list.clear();
         if (reminderList.size() == 0) {
@@ -184,7 +191,14 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    for(Pair<Reminder,CountDownTimer> pair : deletedReminders) {
+                        if (list.get(getAdapterPosition()).equals(pair.getFirst())) {
+                            pair.getSecond().cancel();
+                            deletedReminders.remove(pair);
+                            break;
+                        }
+                    }
+                    adapterCallback.undoDeletion(getAdapterPosition());
                 }
             });
         }
@@ -216,12 +230,20 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
     public void onBindViewHolder(@NonNull RemindersAdapter.ViewHolder holder, int position) {
         holder.updateUI(position);
     }
+    private Pair<Reminder,CountDownTimer> findPairReminderCounter (Reminder reminder) {
+        for(Pair<Reminder,CountDownTimer> pair : deletedReminders) {
+            if(pair.getFirst().equals(reminder)) {
+                return pair;
+            }
+        }
+        return null;
+    }
 
     @Override
     public int getItemViewType(int position) {
         Object listItem = list.get(position);
         if (listItem instanceof Reminder) {
-            if (deletedReminders.contains((Reminder) listItem)) {
+            if (findPairReminderCounter((Reminder) listItem) != null) {
                 return ITEM_UNDO;
             } else {
                 return ITEM_REMINDER;
