@@ -29,12 +29,12 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ViewHolder> {
     public final int ITEM_REMINDER = 0;
     public final int ITEM_DIVIDER = 1;
+    private AdapterCallback adapterCallback;
 
-    public List<Items> getList() {
-        return list;
+    public RemindersAdapter(AdapterCallback adapterCallback) {
+        this.adapterCallback = adapterCallback;
     }
-
-    private final List<Items> list = new ArrayList<>();
+    public final List<Items> list = new ArrayList<>();
     public void updateItems(Context context, List<Reminder> reminderList) {
         list.clear();
         if (reminderList.size() == 0) {
