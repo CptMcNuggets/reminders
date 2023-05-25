@@ -1,6 +1,7 @@
 package com.example.reminders20;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -123,25 +126,40 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             Reminder reminder = (Reminder) list.get(getAdapterPosition());
-                            activity.reminderDao.deleteReminder(reminder)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new CompletableObserver() {
+                            new MaterialAlertDialogBuilder(activity)
+                                    .setTitle(R.string.delete_reminder_alert_title)
+                                    .setMessage(R.string.delete_reminder_alert_message)
+                                    .setNegativeButton(R.string.reminder_delete_cancel, new DialogInterface.OnClickListener() {
                                         @Override
-                                        public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+                                        public void onClick(DialogInterface dialog, int which) {
 
                                         }
-
+                                    })
+                                    .setPositiveButton(R.string.reminder_delete, new DialogInterface.OnClickListener() {
                                         @Override
-                                        public void onComplete() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            activity.reminderDao.deleteReminder(reminder)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new CompletableObserver() {
+                                                        @Override
+                                                        public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
 
+                                                        }
+
+                                                        @Override
+                                                        public void onComplete() {
+
+                                                        }
+
+                                                        @Override
+                                                        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                                                        }
+                                                    });
                                         }
-
-                                        @Override
-                                        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
-                                        }
-                                    });
+                                    })
+                                    .show();
                             return false;
                         }
                     });
