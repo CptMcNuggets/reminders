@@ -23,7 +23,6 @@ public class ListFragment extends Fragment {
 
     private Disposable listDisposable = null;
     private RemindersAdapter adapter;
-    private MainActivity activity;
 
     @Nullable
     @Override
@@ -33,7 +32,7 @@ public class ListFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        activity = (MainActivity) getActivity();
+        MainActivity activity = (MainActivity) getActivity();
         if (activity == null) return;
         FloatingActionButton fab_new_reminder = view.findViewById(R.id.fab_new_reminder);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);

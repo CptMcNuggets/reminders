@@ -17,14 +17,10 @@ public class DeletionConfirmationDialogFragment extends DialogFragment {
         this.adapterCallback = adapterCallback;
     }
 
-    private MainActivity context;
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        context = (MainActivity) getContext();
-        Bundle bundle = this.getArguments();
-        int position = bundle.getInt(RemindersAdapter.ARG_POSITION);
+        MainActivity context = (MainActivity) getContext();
         return new AlertDialog.Builder(context)
                 .setTitle(R.string.delete_reminder_alert_title)
                 .setMessage(R.string.delete_reminder_alert_message)
@@ -37,7 +33,7 @@ public class DeletionConfirmationDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.reminder_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        adapterCallback.confirmDeletion(position);
+                        adapterCallback.confirmDeletion();
                     }
                 }).create();
     }

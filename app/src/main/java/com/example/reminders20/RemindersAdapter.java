@@ -35,6 +35,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
     public static final String ARG_POSITION = "adapter_position";
     private final List<Items> list = new ArrayList<>();
     private MainActivity activity;
+    private int position;
     public void updateItems(Context context, List<Reminder> reminderList) {
         list.clear();
         if (reminderList.size() == 0) {
@@ -87,9 +88,10 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
     }
 
     @Override
-    public void confirmDeletion(int position) {
-        activity.reminderDao.deleteReminder((Reminder) list.get(position))
-                .observeOn(Schedulers.io())
+    public void confirmDeletion() {
+        Reminder reminder = (Reminder) list.get(position);
+        activity.reminderDao.deleteReminder(reminder)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
                     @Override
@@ -132,9 +134,6 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
             itemView.setOnClickListener(v -> {
                 NewReminderFragment editReminder = new NewReminderFragment();
                 Reminder reminder = (Reminder) list.get(getAdapterPosition());
-                Bundle bundle = new Bundle();
-                bundle.putLong(Reminder.ARG_TIMESTAMP, reminder.getTimestamp());
-                editReminder.setArguments(bundle);
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, editReminder)
                         .addToBackStack("edit")
                         .commit();
@@ -142,6 +141,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    position = getAdapterPosition();
                     PopupMenu popupMenu = new PopupMenu(activity, itemView);
                     popupMenu.getMenuInflater().inflate(R.menu.deletion_menu,popupMenu.getMenu());
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
