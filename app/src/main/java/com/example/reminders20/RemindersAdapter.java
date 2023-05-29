@@ -35,7 +35,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
     public static final String ARG_POSITION = "adapter_position";
     private final List<Items> list = new ArrayList<>();
     private MainActivity activity;
-    private int position;
+
     public void updateItems(Context context, List<Reminder> reminderList) {
         list.clear();
         if (reminderList.size() == 0) {
@@ -88,7 +88,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
     }
 
     @Override
-    public void confirmDeletion() {
+    public void confirmDeletion(int position) {
         Reminder reminder = (Reminder) list.get(position);
         activity.reminderDao.deleteReminder(reminder)
                 .subscribeOn(Schedulers.io())
@@ -141,7 +141,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    position = getAdapterPosition();
+                    int position = getAdapterPosition();
                     PopupMenu popupMenu = new PopupMenu(activity, itemView);
                     popupMenu.getMenuInflater().inflate(R.menu.deletion_menu,popupMenu.getMenu());
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

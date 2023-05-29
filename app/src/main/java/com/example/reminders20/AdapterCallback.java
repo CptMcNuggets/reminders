@@ -1,5 +1,5 @@
 package com.example.reminders20;
 
 public interface AdapterCallback {
-    void confirmDeletion();
+    void confirmDeletion(int position);
 }
