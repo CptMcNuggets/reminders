@@ -29,12 +29,12 @@ import io.reactivex.rxjava3.core.CompletableObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ViewHolder> {
+public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ViewHolder> implements AdapterCallback {
     public final int ITEM_REMINDER = 0;
     public final int ITEM_DIVIDER = 1;
     public static final String ARG_POSITION = "adapter_position";
-    public static final List<Items> list = new ArrayList<>();
-
+    private final List<Items> list = new ArrayList<>();
+    private MainActivity activity;
     public void updateItems(Context context, List<Reminder> reminderList) {
         list.clear();
         if (reminderList.size() == 0) {
@@ -85,6 +85,31 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
 
         notifyDataSetChanged();
     }
+
+    @Override
+    public void confirmDeletion(int position) {
+        activity.reminderDao.deleteReminder((Reminder) list.get(position))
+                .observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                    }
+                });
+        notifyItemRemoved(position);
+    }
+
     public abstract class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(@NonNull View itemView) {
@@ -103,7 +128,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
             date = itemView.findViewById(R.id.date);
-            MainActivity activity = (MainActivity) itemView.getContext();
+            activity = (MainActivity) itemView.getContext();
             itemView.setOnClickListener(v -> {
                 NewReminderFragment editReminder = new NewReminderFragment();
                 Reminder reminder = (Reminder) list.get(getAdapterPosition());
@@ -123,6 +148,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             DeletionConfirmationDialogFragment alert = new DeletionConfirmationDialogFragment();
+                            alert.setAdapterCallback(RemindersAdapter.this);
                             Bundle args = new Bundle();
                             int position = getAdapterPosition();
                             args.putInt(RemindersAdapter.ARG_POSITION, position);

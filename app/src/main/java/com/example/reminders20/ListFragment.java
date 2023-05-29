@@ -22,6 +22,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class ListFragment extends Fragment {
 
     private Disposable listDisposable = null;
+    private RemindersAdapter adapter;
+    private MainActivity activity;
 
     @Nullable
     @Override
@@ -31,11 +33,11 @@ public class ListFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        MainActivity activity = (MainActivity) getActivity();
+        activity = (MainActivity) getActivity();
         if (activity == null) return;
         FloatingActionButton fab_new_reminder = view.findViewById(R.id.fab_new_reminder);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-        RemindersAdapter adapter = new RemindersAdapter();
+        adapter = new RemindersAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         listDisposable = activity.reminderDao.getAll()
@@ -54,5 +56,4 @@ public class ListFragment extends Fragment {
             listDisposable.dispose();
         }
     }
-
 }

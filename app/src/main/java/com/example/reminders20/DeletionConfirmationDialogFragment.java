@@ -9,19 +9,20 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import java.util.List;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.CompletableObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-
 public class DeletionConfirmationDialogFragment extends DialogFragment {
     public static String TAG = "ReminderDeletionConfirmation";
+    private AdapterCallback adapterCallback;
+
+    public void setAdapterCallback(AdapterCallback adapterCallback) {
+        this.adapterCallback = adapterCallback;
+    }
+
+    private MainActivity context;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        MainActivity context = (MainActivity) getContext();
+        context = (MainActivity) getContext();
         Bundle bundle = this.getArguments();
         int position = bundle.getInt(RemindersAdapter.ARG_POSITION);
         return new AlertDialog.Builder(context)
@@ -36,25 +37,7 @@ public class DeletionConfirmationDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.reminder_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        context.reminderDao.deleteReminder((Reminder) RemindersAdapter.list.get(position))
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new CompletableObserver() {
-                                    @Override
-                                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-
-                                    }
-
-                                    @Override
-                                    public void onComplete() {
-
-                                    }
-
-                                    @Override
-                                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
-                                    }
-                                });
+                        adapterCallback.confirmDeletion(position);
                     }
                 }).create();
     }
