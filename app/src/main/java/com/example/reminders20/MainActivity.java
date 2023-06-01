@@ -9,15 +9,12 @@ import com.example.reminders20.db.ReminderDatabase;
 import com.example.reminders20.fragments.ListFragment;
 
 public class MainActivity extends AppCompatActivity {
-    public ReminderDatabase reminderDB;
-    public static final String REMINDER_DB_NAME = "reminder_db";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, new ListFragment()).addToBackStack(ListFragment.class.getCanonicalName()).commit();
-        reminderDB = Room.databaseBuilder(getApplicationContext(), ReminderDatabase.class, REMINDER_DB_NAME).build();
     }
 
     @Override

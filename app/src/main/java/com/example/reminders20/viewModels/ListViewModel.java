@@ -26,7 +26,7 @@ public class ListViewModel extends ViewModel {
     public ListViewModel(ReminderDao reminderDao) {
         this.reminderDao = reminderDao;
     }
-    //public LiveData<List<Reminder>> getAllReminders = reminderDao.getAll();
+
     public void deleteReminderWithUndo (Reminder reminder) {
         reminderDao.deleteReminder(reminder)
                 .subscribeOn(Schedulers.io())

@@ -1,7 +1,5 @@
 package com.example.reminders20.di.modules;
 
-import static com.example.reminders20.MainActivity.REMINDER_DB_NAME;
-
 import androidx.annotation.NonNull;
 import androidx.room.Room;
 
@@ -16,6 +14,8 @@ import dagger.Provides;
 
 @Module
 public class DBModule {
+
+    public static final String REMINDER_DB_NAME = "reminder_db";
 
     @Provides
     @Singleton
