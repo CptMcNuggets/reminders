@@ -3,29 +3,21 @@ package com.example.reminders20;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModel;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.reminders20.db.Reminder;
+import com.example.reminders20.fragments.NewReminderFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.CompletableObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ViewHolder> {
     public final int ITEM_REMINDER = 0;

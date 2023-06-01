@@ -1,8 +1,10 @@
-package com.example.reminders20;
+package com.example.reminders20.db;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import com.example.reminders20.Items;
 
 import java.util.Date;
 

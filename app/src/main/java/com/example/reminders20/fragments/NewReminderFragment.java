@@ -1,4 +1,4 @@
-package com.example.reminders20;
+package com.example.reminders20.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +10,10 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.reminders20.MainActivity;
+import com.example.reminders20.R;
+import com.example.reminders20.db.Reminder;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.CompletableObserver;
@@ -35,14 +39,14 @@ public class NewReminderFragment extends Fragment {
         EditText inputTitle = view.findViewById(R.id.input_title);
         EditText inputDescription = view.findViewById(R.id.input_description);
         if(bundle != null) {
-            singleReminder = activity.reminderDao.getReminderByTimestamp(bundle.getLong(Reminder.ARG_TIMESTAMP))
+           /* singleReminder = activity.reminderDao.getReminderByTimestamp(bundle.getLong(Reminder.ARG_TIMESTAMP))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(
                             result -> {
                                 inputTitle.setText(result.getTitle());
                                 inputDescription.setText(result.getDescription());
                             }, Throwable::printStackTrace
-                );
+                );*/
         }
         saveButton.setOnClickListener(v -> {
             long timestamp = System.currentTimeMillis();
@@ -54,7 +58,7 @@ public class NewReminderFragment extends Fragment {
             if(argTimestamp > 0) {
                 timestamp = argTimestamp;
             }
-            activity.reminderDao.insertReminder(new Reminder(inputTitle.getText().toString(), inputDescription.getText().toString(), timestamp))
+            /*activity.reminderDao.insertReminder(new Reminder(inputTitle.getText().toString(), inputDescription.getText().toString(), timestamp))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new CompletableObserver() {
                         @Override
@@ -72,7 +76,7 @@ public class NewReminderFragment extends Fragment {
 
                         }
                     });
-
+*/
         });
     }
 

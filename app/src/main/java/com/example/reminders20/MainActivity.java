@@ -5,9 +5,12 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import com.example.reminders20.db.ReminderDatabase;
+import com.example.reminders20.fragments.ListFragment;
+
 public class MainActivity extends AppCompatActivity {
     public ReminderDatabase reminderDB;
-    private static final String REMINDER_DB_NAME = "reminder_db";
+    public static final String REMINDER_DB_NAME = "reminder_db";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

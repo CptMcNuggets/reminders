@@ -1,8 +1,7 @@
-package com.example.reminders20;
+package com.example.reminders20.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,27 +10,39 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.reminders20.AdapterCallback;
+import com.example.reminders20.RemindersApplication;
+import com.example.reminders20.viewModels.ListViewModel;
+import com.example.reminders20.MainActivity;
+import com.example.reminders20.R;
+import com.example.reminders20.RemindersAdapter;
+import com.example.reminders20.db.Reminder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.CompletableObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import javax.inject.Inject;
 
 public class ListFragment extends Fragment implements AdapterCallback {
 
     private RemindersAdapter adapter;
-    private ListViewModel viewModel; // TODO INIT
+
+    @Inject
+    ListViewModel viewModel;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        RemindersApplication.getRootComponent().inject(this);
+    }
+
     private void subscribeOnViewModel(View view){
-        viewModel.getAllReminders.observe(getViewLifecycleOwner(), new Observer<List<Reminder>>() {
+        viewModel.getAllReminders().observe(getViewLifecycleOwner(), new Observer<List<Reminder>>() {
             @Override
             public void onChanged(List<Reminder> reminderList) {
                 Context context = getContext();
@@ -42,7 +53,7 @@ public class ListFragment extends Fragment implements AdapterCallback {
         viewModel.deletedReminder.observe(getViewLifecycleOwner(), new Observer<Reminder>() {
             @Override
             public void onChanged(Reminder reminder) {
-                Snackbar.make(view,R.string.undo_deletion,Snackbar.LENGTH_SHORT)
+                Snackbar.make(view, R.string.undo_deletion,Snackbar.LENGTH_SHORT)
                         .setAction(R.string.undo_deletion, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
