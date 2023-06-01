@@ -1,5 +1,6 @@
 package com.example.reminders20;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -15,9 +16,9 @@ import io.reactivex.rxjava3.core.Single;
 @Dao
 public interface ReminderDao{
     @Query("SELECT * FROM Reminder")
-    Flowable<List<Reminder>> getAll();
+    LiveData<List<Reminder>> getAll();
     @Query("SELECT * FROM Reminder WHERE timestamp = :timestamp")
-    Single<Reminder> getReminderByTimestamp(long timestamp);
+    LiveData<Reminder> getReminderByTimestamp(long timestamp);
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     Completable insertReminder(Reminder reminder);
     @Delete

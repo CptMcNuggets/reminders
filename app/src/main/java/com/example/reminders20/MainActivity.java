@@ -7,8 +7,6 @@ import androidx.room.Room;
 
 public class MainActivity extends AppCompatActivity {
     public ReminderDatabase reminderDB;
-    public ReminderDao reminderDao;
-
     private static final String REMINDER_DB_NAME = "reminder_db";
 
     @Override
@@ -17,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, new ListFragment()).addToBackStack(ListFragment.class.getCanonicalName()).commit();
         reminderDB = Room.databaseBuilder(getApplicationContext(), ReminderDatabase.class, REMINDER_DB_NAME).build();
-        reminderDao = reminderDB.reminderDao();
     }
 
     @Override

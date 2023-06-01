@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,11 +30,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ViewHolder> {
     public final int ITEM_REMINDER = 0;
     public final int ITEM_DIVIDER = 1;
-    private AdapterCallback adapterCallback;
-
-    public RemindersAdapter(AdapterCallback adapterCallback) {
-        this.adapterCallback = adapterCallback;
-    }
     public final List<Items> list = new ArrayList<>();
     public void updateItems(Context context, List<Reminder> reminderList) {
         list.clear();
@@ -113,41 +109,6 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, editReminder)
                         .addToBackStack("edit")
                         .commit();
-            });
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    PopupMenu popupMenu = new PopupMenu(activity, itemView);
-                    popupMenu.getMenuInflater().inflate(R.menu.deletion_menu,popupMenu.getMenu());
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            Reminder reminder = (Reminder) list.get(getAdapterPosition());
-                            activity.reminderDao.deleteReminder(reminder)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new CompletableObserver() {
-                                        @Override
-                                        public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-
-                                        }
-
-                                        @Override
-                                        public void onComplete() {
-
-                                        }
-
-                                        @Override
-                                        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
-                                        }
-                                    });
-                            return false;
-                        }
-                    });
-                    popupMenu.show();
-                    return false;
-                }
             });
         }
 
