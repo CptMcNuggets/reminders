@@ -1,7 +1,9 @@
 package com.example.reminders20.di.modules;
 
+import com.example.reminders20.db.Reminder;
 import com.example.reminders20.db.ReminderDao;
 import com.example.reminders20.viewModels.ListViewModel;
+import com.example.reminders20.viewModels.NewReminderViewModel;
 
 import javax.inject.Singleton;
 
@@ -15,6 +17,11 @@ public class ViewModelModule {
     @Singleton
     ListViewModel provideListViewModel(ReminderDao reminderDao) {
         return new ListViewModel(reminderDao);
+    }
+    @Provides
+    @Singleton
+    NewReminderViewModel provideNewReminderViewModel(ReminderDao reminderDao) {
+        return new NewReminderViewModel(reminderDao);
     }
 
 }

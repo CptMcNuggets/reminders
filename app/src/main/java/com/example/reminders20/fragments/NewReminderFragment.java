@@ -10,10 +10,15 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 
 import com.example.reminders20.MainActivity;
 import com.example.reminders20.R;
+import com.example.reminders20.RemindersApplication;
 import com.example.reminders20.db.Reminder;
+import com.example.reminders20.viewModels.NewReminderViewModel;
+
+import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.CompletableObserver;
@@ -21,13 +26,45 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class NewReminderFragment extends Fragment {
-    private Disposable singleReminder = null;
+    @Inject
+    NewReminderViewModel viewModel;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        RemindersApplication.getRootComponent().inject(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_add_reminder, container, false);
     }
-
+    private void subscribeOnViewModel(View view) {
+        viewModel.insertedReminder.observe(getViewLifecycleOwner(), new Observer<Reminder>() {
+            @Override
+            public void onChanged(Reminder reminder) {
+                MainActivity activity = (MainActivity) getActivity();
+                if (activity == null) {
+                    return;
+                }
+                activity.onBackPressed();
+            }
+        });
+        Bundle bundle = this.getArguments();
+        EditText inputTitle = view.findViewById(R.id.input_title);
+        EditText inputDescription = view.findViewById(R.id.input_description);
+        if(bundle != null) {
+            long timestamp = bundle.getLong(Reminder.ARG_TIMESTAMP, -1L);
+            viewModel.getReminderByTimestamp(timestamp).observe(getViewLifecycleOwner(), new Observer<Reminder>() {
+                @Override
+                public void onChanged(Reminder reminder) {
+                    inputTitle.setText(reminder.getTitle());
+                    inputDescription.setText(reminder.getDescription());
+                }
+            });
+        }
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Bundle bundle = this.getArguments();
@@ -35,19 +72,19 @@ public class NewReminderFragment extends Fragment {
         if (activity == null) {
             return;
         }
-        Button saveButton = view.findViewById(R.id.save_button);
         EditText inputTitle = view.findViewById(R.id.input_title);
         EditText inputDescription = view.findViewById(R.id.input_description);
         if(bundle != null) {
-           /* singleReminder = activity.reminderDao.getReminderByTimestamp(bundle.getLong(Reminder.ARG_TIMESTAMP))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(
-                            result -> {
-                                inputTitle.setText(result.getTitle());
-                                inputDescription.setText(result.getDescription());
-                            }, Throwable::printStackTrace
-                );*/
+            long timestamp = bundle.getLong(Reminder.ARG_TIMESTAMP, -1L);
+            viewModel.getReminderByTimestamp(timestamp).observe(getViewLifecycleOwner(), new Observer<Reminder>() {
+                @Override
+                public void onChanged(Reminder reminder) {
+                    inputTitle.setText(reminder.getTitle());
+                    inputDescription.setText(reminder.getDescription());
+                }
+            });
         }
+        Button saveButton = view.findViewById(R.id.save_button);
         saveButton.setOnClickListener(v -> {
             long timestamp = System.currentTimeMillis();
 
@@ -58,33 +95,14 @@ public class NewReminderFragment extends Fragment {
             if(argTimestamp > 0) {
                 timestamp = argTimestamp;
             }
-            /*activity.reminderDao.insertReminder(new Reminder(inputTitle.getText().toString(), inputDescription.getText().toString(), timestamp))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new CompletableObserver() {
-                        @Override
-                        public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            activity.onBackPressed();
-                        }
-
-                        @Override
-                        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
-                        }
-                    });
-*/
+            viewModel.insertNewReminder(new Reminder(inputTitle.getText().toString(), inputDescription.getText().toString(),timestamp));
+            activity.onBackPressed();
         });
-    }
+        viewModel.insertedReminder.observe(getViewLifecycleOwner(), new Observer<Reminder>() {
+            @Override
+            public void onChanged(Reminder reminder) {
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (singleReminder != null) {
-            singleReminder.dispose();
-        }
+            }
+        });
     }
 }

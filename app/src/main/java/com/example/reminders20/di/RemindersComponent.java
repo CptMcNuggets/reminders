@@ -6,7 +6,9 @@ import com.example.reminders20.RemindersApplication;
 import com.example.reminders20.di.modules.DBModule;
 import com.example.reminders20.di.modules.ViewModelModule;
 import com.example.reminders20.fragments.ListFragment;
+import com.example.reminders20.fragments.NewReminderFragment;
 import com.example.reminders20.viewModels.ListViewModel;
+import com.example.reminders20.viewModels.NewReminderViewModel;
 
 import javax.inject.Singleton;
 
@@ -45,5 +47,7 @@ public interface RemindersComponent {
 
     void inject(ListViewModel listViewModel);
     void inject(ListFragment listFragment);
+    void inject(NewReminderViewModel newReminderViewModel);
+    void inject(NewReminderFragment newReminderFragment);
 
 }

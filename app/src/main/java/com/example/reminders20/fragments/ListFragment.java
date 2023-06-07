@@ -22,6 +22,7 @@ import com.example.reminders20.R;
 import com.example.reminders20.RemindersAdapter;
 import com.example.reminders20.db.Reminder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -53,13 +54,6 @@ public class ListFragment extends Fragment implements AdapterCallback {
         viewModel.deletedReminder.observe(getViewLifecycleOwner(), new Observer<Reminder>() {
             @Override
             public void onChanged(Reminder reminder) {
-                Snackbar.make(view, R.string.undo_deletion,Snackbar.LENGTH_SHORT)
-                        .setAction(R.string.undo_deletion, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                            }
-                        })
-                        .show();
             }
         });
     }
@@ -95,12 +89,38 @@ public class ListFragment extends Fragment implements AdapterCallback {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
-                viewModel.deleteReminderWithUndo((Reminder) adapter.list.get(position));
+                Reminder reminder = (Reminder) adapter.list.get(position);
+                adapter.list.remove(position);
+                adapter.notifyItemRemoved(position);
+                Snackbar.make(view, R.string.undo_deletion,Snackbar.LENGTH_SHORT)
+                        .setAction(R.string.undo_deletion, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                            }
+                        })
+                        .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                            @Override
+                            public void onDismissed(Snackbar transientBottomBar, int event) {
+                                switch (event) {
+                                    case DISMISS_EVENT_ACTION:
+                                        adapter.list.add(position,reminder);
+                                        adapter.notifyItemInserted(position);
+                                        break;
+                                    case DISMISS_EVENT_TIMEOUT:
+                                        viewModel.deleteReminderWithUndo(reminder);
+                                }
+                            }
+                        })
+                        .show();
+
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
-        fab_new_reminder.setOnClickListener(v -> activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, new NewReminderFragment(), "add_fragment").addToBackStack("add_fragment").commit());
+        fab_new_reminder.setOnClickListener(v -> activity.getSupportFragmentManager()
+                .beginTransaction().replace(R.id.container, new NewReminderFragment(), "add_fragment")
+                .addToBackStack("add_fragment")
+                .commit());
         subscribeOnViewModel(view);
     }
 
