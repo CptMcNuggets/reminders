@@ -19,7 +19,6 @@ public class ViewModelModule {
         return new ListViewModel(reminderDao);
     }
     @Provides
-    @Singleton
     NewReminderViewModel provideNewReminderViewModel(ReminderDao reminderDao) {
         return new NewReminderViewModel(reminderDao);
     }
