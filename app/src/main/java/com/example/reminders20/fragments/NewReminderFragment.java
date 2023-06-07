@@ -49,9 +49,10 @@ public class NewReminderFragment extends Fragment {
         }
         EditText inputTitle = view.findViewById(R.id.input_title);
         EditText inputDescription = view.findViewById(R.id.input_description);
+        final long[] timestamp = {-1};
         if(bundle != null) {
-            long timestamp = bundle.getLong(Reminder.ARG_TIMESTAMP, -1L);
-            viewModel.getReminderByTimestamp(timestamp).observe(getViewLifecycleOwner(), new Observer<Reminder>() {
+            timestamp[0] = bundle.getLong(Reminder.ARG_TIMESTAMP, -1L);
+            viewModel.getReminderByTimestamp(timestamp[0]).observe(getViewLifecycleOwner(), new Observer<Reminder>() {
                 @Override
                 public void onChanged(Reminder reminder) {
                     inputTitle.setText(reminder.getTitle());
@@ -61,22 +62,19 @@ public class NewReminderFragment extends Fragment {
         }
         Button saveButton = view.findViewById(R.id.save_button);
         saveButton.setOnClickListener(v -> {
-            long timestamp = System.currentTimeMillis();
+            long newTimestamp;
 
-            long argTimestamp = 0;
-            if (bundle != null) {
-                argTimestamp = bundle.getLong(Reminder.ARG_TIMESTAMP, -1L);
+            if (timestamp[0] > 0) {
+                newTimestamp = timestamp[0];
+            } else {
+                newTimestamp = System.currentTimeMillis();
             }
-            if(argTimestamp > 0) {
-                timestamp = argTimestamp;
-            }
-            viewModel.insertNewReminder(new Reminder(inputTitle.getText().toString(), inputDescription.getText().toString(),timestamp));
+
+
+            viewModel.insertNewReminder(new Reminder(inputTitle.getText().toString(), inputDescription.getText().toString(), newTimestamp));
         });
-        viewModel.insertedReminder.observe(getViewLifecycleOwner(), new Observer<Reminder>() {
-            @Override
-            public void onChanged(Reminder reminder) {
-                activity.onBackPressed();
-            }
+        viewModel.insertedReminder.observe(getViewLifecycleOwner(), reminder -> {
+            activity.onBackPressed();
         });
     }
 }
