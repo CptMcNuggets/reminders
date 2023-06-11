@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.navigation.Navigation;
 
 import com.example.reminders20.MainActivity;
 import com.example.reminders20.R;
@@ -42,7 +43,6 @@ public class NewReminderFragment extends Fragment {
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Bundle bundle = this.getArguments();
         MainActivity activity = (MainActivity) getActivity();
         if (activity == null) {
             return;
@@ -50,16 +50,17 @@ public class NewReminderFragment extends Fragment {
         EditText inputTitle = view.findViewById(R.id.input_title);
         EditText inputDescription = view.findViewById(R.id.input_description);
         final long[] timestamp = {-1};
-        if(bundle != null) {
-            timestamp[0] = bundle.getLong(Reminder.ARG_TIMESTAMP, -1L);
-            viewModel.getReminderByTimestamp(timestamp[0]).observe(getViewLifecycleOwner(), new Observer<Reminder>() {
-                @Override
-                public void onChanged(Reminder reminder) {
-                    inputTitle.setText(reminder.getTitle());
-                    inputDescription.setText(reminder.getDescription());
-                }
-            });
-        }
+
+            timestamp[0] = NewReminderFragmentArgs.fromBundle(getArguments()).getTimestamp();
+            if(timestamp[0] != 0) {
+                viewModel.getReminderByTimestamp(timestamp[0]).observe(getViewLifecycleOwner(), new Observer<Reminder>() {
+                    @Override
+                    public void onChanged(Reminder reminder) {
+                        inputTitle.setText(reminder.getTitle());
+                        inputDescription.setText(reminder.getDescription());
+                    }
+                });
+            }
         Button saveButton = view.findViewById(R.id.save_button);
         saveButton.setOnClickListener(v -> {
             long newTimestamp;
@@ -74,7 +75,7 @@ public class NewReminderFragment extends Fragment {
             viewModel.insertNewReminder(new Reminder(inputTitle.getText().toString(), inputDescription.getText().toString(), newTimestamp));
         });
         viewModel.insertedReminder.observe(getViewLifecycleOwner(), reminder -> {
-            activity.onBackPressed();
+            Navigation.findNavController(view).popBackStack();
         });
     }
 }

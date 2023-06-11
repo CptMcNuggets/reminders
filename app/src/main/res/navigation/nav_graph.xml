@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/listFragment">
+
+    <fragment
+        tools:layout="@layout/fragment_list"
+        android:id="@+id/listFragment"
+        android:name="com.example.reminders20.fragments.ListFragment"
+        android:label="ListFragment" >
+        <action
+            android:id="@+id/openNewReminderAction"
+            app:destination="@id/newReminderFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_add_reminder"
+        android:id="@+id/newReminderFragment"
+        android:name="com.example.reminders20.fragments.NewReminderFragment"
+        android:label="NewReminderFragment" >
+        <action
+            android:id="@+id/action_newReminderFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+        <argument
+            android:name="timestamp"
+            app:argType="long"
+            android:defaultValue="0L" />
+    </fragment>
+</navigation>

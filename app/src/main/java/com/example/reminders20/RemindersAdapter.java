@@ -8,9 +8,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.reminders20.db.Reminder;
+import com.example.reminders20.fragments.ListFragmentDirections;
 import com.example.reminders20.fragments.NewReminderFragment;
 
 import java.util.ArrayList;
@@ -95,12 +97,8 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.View
             itemView.setOnClickListener(v -> {
                 NewReminderFragment editReminder = new NewReminderFragment();
                 Reminder reminder = (Reminder) list.get(getAdapterPosition());
-                Bundle bundle = new Bundle();
-                bundle.putLong(Reminder.ARG_TIMESTAMP, reminder.getTimestamp());
-                editReminder.setArguments(bundle);
-                activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, editReminder)
-                        .addToBackStack("edit")
-                        .commit();
+                long timestamp = reminder.getTimestamp();
+                Navigation.findNavController(itemView).navigate(ListFragmentDirections.openNewReminderAction().setTimestamp(timestamp));
             });
         }
 

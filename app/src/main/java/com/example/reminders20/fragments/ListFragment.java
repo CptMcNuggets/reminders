@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -117,10 +118,12 @@ public class ListFragment extends Fragment implements AdapterCallback {
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
-        fab_new_reminder.setOnClickListener(v -> activity.getSupportFragmentManager()
-                .beginTransaction().replace(R.id.container, new NewReminderFragment(), "add_fragment")
-                .addToBackStack("add_fragment")
-                .commit());
+        fab_new_reminder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(view).navigate(R.id.openNewReminderAction);
+            }
+        });
         subscribeOnViewModel(view);
     }
 
