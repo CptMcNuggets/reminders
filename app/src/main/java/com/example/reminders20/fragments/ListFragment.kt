@@ -82,25 +82,51 @@ class ListFragment : Fragment(), AdapterCallback {
                     adapter.list.removeAt(position)
                     adapter.notifyItemRemoved(position)
 
-                    val snackbar = Snackbar.make(view, R.string.undo_deletion, Snackbar.LENGTH_SHORT)
+                    Snackbar.make(view, R.string.undo_deletion, Snackbar.LENGTH_SHORT)
+                        .apply {
+                            setAction(R.string.undo_deletion) {
+                                this.dismiss()
+                            }.addCallback(object : BaseCallback<Snackbar>() {
+                                override fun onDismissed(transientBottomBar: Snackbar, event: Int) {
+                                    when (event) {
+                                        DISMISS_EVENT_ACTION -> {
+                                            adapter.list.add(position, reminder)
+                                            adapter.notifyItemInserted(position)
+                                        }
 
-                    snackbar.setAction(R.string.undo_deletion) {
-                        snackbar.dismiss()
-                    }.addCallback(object : BaseCallback<Snackbar?>() {
-                        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                            when (event) {
-                                DISMISS_EVENT_ACTION -> {
-                                    adapter.list.add(position, reminder)
-                                    adapter.notifyItemInserted(position)
+                                        DISMISS_EVENT_TIMEOUT -> viewModel.deleteReminderWithUndo(reminder)
+                                        else -> {
+                                            //ignore
+                                        }
+                                    }
                                 }
+                            })
+                        }.show()
+                        /*.also { snackBar ->
+                            snackBar.setAction(R.string.undo_deletion) {
+                                snackBar.dismiss()
+                            }.addCallback(object : BaseCallback<Snackbar?>() {
+                                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                                    when (event) {
+                                        DISMISS_EVENT_ACTION -> {
+                                            adapter.list.add(position, reminder)
+                                            adapter.notifyItemInserted(position)
+                                        }
 
-                                DISMISS_EVENT_TIMEOUT -> viewModel.deleteReminderWithUndo(reminder)
-                                else -> {
-                                    //ignore
+                                        DISMISS_EVENT_TIMEOUT -> viewModel.deleteReminderWithUndo(reminder)
+                                        else -> {
+                                            //ignore
+                                        }
+                                    }
                                 }
-                            }
+                            })
+                        }*/
+                        /*.run {
+                            this
                         }
-                    }).show()
+                        ?.let { snackbar ->
+                           snackbar
+                        }*/
                 }
             }
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
