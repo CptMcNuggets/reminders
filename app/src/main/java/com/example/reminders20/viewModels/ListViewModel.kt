@@ -12,9 +12,11 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 class ListViewModel @Inject constructor(private val reminderDao: ReminderDao) : ViewModel() {
-    private val _deletedReminder = MutableLiveData<Reminder?>()
-    var deletedReminder: LiveData<Reminder?> = _deletedReminder
-    fun deleteReminderWithUndo(reminder: Reminder?) {
+    private val _deletedReminder = MutableLiveData<Reminder>()
+    var deletedReminder: LiveData<Reminder> = _deletedReminder
+    val allReminders: LiveData<List<Reminder>> = reminderDao.getAll()
+
+    fun deleteReminderWithUndo(reminder: Reminder) {
         reminderDao.deleteReminder(reminder)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -24,19 +26,6 @@ class ListViewModel @Inject constructor(private val reminderDao: ReminderDao) : 
                         _deletedReminder.value = reminder
                     }
 
-                    override fun onError(e: Throwable) {}
-                })
-    }
-
-    val allReminders: LiveData<List<Reminder?>?>?
-        get() = reminderDao.all
-
-    fun undoDeletionReminder(reminder: Reminder?) {
-        reminderDao.insertReminder(reminder)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(object : CompletableObserver {
-                    override fun onSubscribe(d: Disposable) {}
-                    override fun onComplete() {}
                     override fun onError(e: Throwable) {}
                 })
     }

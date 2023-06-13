@@ -15,7 +15,7 @@ import java.util.*
 class RemindersAdapter : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
     val ITEM_REMINDER = 0
     val ITEM_DIVIDER = 1
-    val list: MutableList<Items?> = ArrayList()
+    val list: MutableList<Items> = ArrayList()
     fun updateItems(context: Context, reminderList: List<Reminder?>) {
         list.clear()
         if (reminderList.size == 0) {
