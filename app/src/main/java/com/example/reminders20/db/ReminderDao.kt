@@ -10,7 +10,7 @@ interface ReminderDao {
     fun getAll(): LiveData<List<Reminder>>
 
     @Query("SELECT * FROM Reminder WHERE timestamp = :timestamp")
-    fun getReminderByTimestamp(timestamp: Long): LiveData<Reminder>
+    fun getReminderByTimestamp(timestamp: Long): LiveData<Reminder?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertReminder(reminder: Reminder): Completable

@@ -14,7 +14,7 @@ import javax.inject.Inject
 class NewReminderViewModel @Inject constructor(private val reminderDao: ReminderDao) : ViewModel() {
     private val _reminderUpdated = MutableLiveData<Reminder?>()
     var insertedReminder: LiveData<Reminder?> = _reminderUpdated
-    fun insertNewReminder(reminder: Reminder?) {
+    fun insertNewReminder(reminder: Reminder) {
         reminderDao.insertReminder(reminder)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -28,7 +28,7 @@ class NewReminderViewModel @Inject constructor(private val reminderDao: Reminder
                 })
     }
 
-    fun getReminderByTimestamp(timestamp: Long): LiveData<Reminder?>? {
+    fun getReminderByTimestamp(timestamp: Long): LiveData<Reminder?> {
         return reminderDao.getReminderByTimestamp(timestamp)
     }
 }
