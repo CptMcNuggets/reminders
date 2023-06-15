@@ -14,6 +14,7 @@ import com.example.reminders20.AdapterCallback
 import com.example.reminders20.MainActivity
 import com.example.reminders20.R
 import com.example.reminders20.RemindersAdapter
+import com.example.reminders20.RemindersAdapter.Companion.ITEM_REMINDER
 import com.example.reminders20.RemindersApplication
 import com.example.reminders20.db.Reminder
 import com.example.reminders20.viewModels.ListViewModel
@@ -27,10 +28,10 @@ class ListFragment : Fragment(), AdapterCallback {
     private lateinit var adapter: RemindersAdapter
 
     @Inject
-    private lateinit var viewModel: ListViewModel
+    lateinit var viewModel: ListViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        RemindersApplication.rootComponent?.inject(this)
+        RemindersApplication.rootComponent.inject(this)
     }
 
     private fun subscribeOnViewModel() {
@@ -63,7 +64,7 @@ class ListFragment : Fragment(), AdapterCallback {
                     recyclerView: RecyclerView,
                     viewHolder: RecyclerView.ViewHolder
                 ): Int {
-                    return if (viewHolder.itemViewType != adapter.ITEM_REMINDER) {
+                    return if (viewHolder.itemViewType != ITEM_REMINDER) {
                         0
                     } else super.getSwipeDirs(recyclerView, viewHolder)
                 }

@@ -8,7 +8,6 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation.findNavController
-import com.example.reminders20.MainActivity
 import com.example.reminders20.R
 import com.example.reminders20.RemindersApplication
 import com.example.reminders20.db.Reminder
@@ -17,25 +16,28 @@ import javax.inject.Inject
 
 class NewReminderFragment : Fragment() {
     @Inject
-     private lateinit var viewModel: NewReminderViewModel
+    lateinit var viewModel: NewReminderViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        RemindersApplication.rootComponent?.inject(this)
+        RemindersApplication.rootComponent.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         return inflater.inflate(R.layout.fragment_add_reminder, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        activity as MainActivity? ?: return
         val inputTitle = view.findViewById<EditText>(R.id.input_title)
         val inputDescription = view.findViewById<EditText>(R.id.input_description)
         val timestamp = NewReminderFragmentArgs.fromBundle(requireArguments()).timestamp
         if (timestamp != 0L) {
             viewModel.getReminderByTimestamp(timestamp).observe(viewLifecycleOwner) { reminder ->
-                    inputTitle.setText(reminder?.title)
-                    inputDescription.setText(reminder?.description)
+                inputTitle.setText(reminder?.title)
+                inputDescription.setText(reminder?.description)
             }
         }
         val saveButton = view.findViewById<Button>(R.id.save_button)
@@ -45,7 +47,13 @@ class NewReminderFragment : Fragment() {
             } else {
                 System.currentTimeMillis()
             }
-            viewModel.insertNewReminder(Reminder(inputTitle.text.toString(), inputDescription.text.toString(), newTimestamp))
+            viewModel.insertNewReminder(
+                Reminder(
+                    inputTitle.text.toString(),
+                    inputDescription.text.toString(),
+                    newTimestamp
+                )
+            )
         }
         viewModel.insertedReminder.observe(viewLifecycleOwner) { findNavController(view).popBackStack() }
     }

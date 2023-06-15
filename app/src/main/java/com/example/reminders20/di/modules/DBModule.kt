@@ -12,13 +12,13 @@ import javax.inject.Singleton
 class DBModule {
     @Provides
     @Singleton
-    fun provideReminderDatabase(application: RemindersApplication?): ReminderDatabase {
-        return Room.databaseBuilder(application!!, ReminderDatabase::class.java, REMINDER_DB_NAME).build()
+    fun provideReminderDatabase(application: RemindersApplication): ReminderDatabase {
+        return Room.databaseBuilder(application, ReminderDatabase::class.java, REMINDER_DB_NAME).build()
     }
 
     @Provides
     @Singleton
-    fun provideReminderDao(db: ReminderDatabase): ReminderDao? {
+    fun provideReminderDao(db: ReminderDatabase): ReminderDao {
         return db.reminderDao()
     }
 

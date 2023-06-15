@@ -7,11 +7,11 @@ import com.example.reminders20.di.RemindersComponent
 class RemindersApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        rootComponent = DaggerRemindersComponent.builder().application(this)?.build()
+        rootComponent = DaggerRemindersComponent.builder().application(this).build()
     }
 
     companion object {
-        var rootComponent: RemindersComponent? = null
+        lateinit var rootComponent: RemindersComponent
             private set
     }
 }

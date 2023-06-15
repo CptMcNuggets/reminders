@@ -31,12 +31,12 @@ interface RemindersComponent {
     @Component.Builder
     interface Builder {
         @BindsInstance
-        fun application(application: RemindersApplication?): Builder?
-        fun build(): RemindersComponent?
+        fun application(application: RemindersApplication): Builder
+        fun build(): RemindersComponent
     }
 
-    fun inject(listViewModel: ListViewModel?)
-    fun inject(listFragment: ListFragment?)
-    fun inject(newReminderViewModel: NewReminderViewModel?)
-    fun inject(newReminderFragment: NewReminderFragment?)
+    fun inject(listViewModel: ListViewModel)
+    fun inject(listFragment: ListFragment)
+    fun inject(newReminderViewModel: NewReminderViewModel)
+    fun inject(newReminderFragment: NewReminderFragment)
 }
