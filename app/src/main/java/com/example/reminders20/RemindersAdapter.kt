@@ -5,10 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.reminders20.db.Reminder
-import com.example.reminders20.fragments.ListFragmentDirections
 import java.util.Calendar
 
 class RemindersAdapter : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
@@ -72,7 +70,8 @@ class RemindersAdapter : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
             itemView.setOnClickListener {
                 val reminder = list[adapterPosition] as Reminder
                 val timestamp = reminder.timestamp
-                findNavController(itemView).navigate(ListFragmentDirections.openNewReminderAction().setTimestamp(timestamp))
+                //TODO replace with fragment
+                //findNavController(itemView).navigate(ListFragmentDirections.openNewReminderAction().setTimestamp(timestamp))
             }
         }
 

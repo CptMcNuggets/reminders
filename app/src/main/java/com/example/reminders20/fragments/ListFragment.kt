@@ -21,18 +21,13 @@ import com.example.reminders20.viewModels.ListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback
 import com.google.android.material.snackbar.Snackbar
-import javax.inject.Inject
 
 class ListFragment : Fragment(), AdapterCallback {
 
     private lateinit var adapter: RemindersAdapter
 
-    @Inject
+    //TODO inject with Koin
     lateinit var viewModel: ListViewModel
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        RemindersApplication.rootComponent.inject(this)
-    }
 
     private fun subscribeOnViewModel() {
         viewModel.allReminders.observe(viewLifecycleOwner, Observer { reminderList ->

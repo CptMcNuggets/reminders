@@ -12,16 +12,11 @@ import com.example.reminders20.R
 import com.example.reminders20.RemindersApplication
 import com.example.reminders20.db.Reminder
 import com.example.reminders20.viewModels.NewReminderViewModel
-import javax.inject.Inject
 
 class NewReminderFragment : Fragment() {
-    @Inject
-    lateinit var viewModel: NewReminderViewModel
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        RemindersApplication.rootComponent.inject(this)
-    }
 
+    //TODO inject with Koin
+    lateinit var viewModel: NewReminderViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,7 +28,7 @@ class NewReminderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val inputTitle = view.findViewById<EditText>(R.id.input_title)
         val inputDescription = view.findViewById<EditText>(R.id.input_description)
-        val timestamp = NewReminderFragmentArgs.fromBundle(requireArguments()).timestamp
+        val timestamp = 0L //NewReminderFragmentArgs.fromBundle(requireArguments()).timestamp
         if (timestamp != 0L) {
             viewModel.getReminderByTimestamp(timestamp).observe(viewLifecycleOwner) { reminder ->
                 inputTitle.setText(reminder?.title)

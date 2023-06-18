@@ -9,9 +9,8 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.CompletableObserver
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import javax.inject.Inject
 
-class ListViewModel @Inject constructor(private val reminderDao: ReminderDao) : ViewModel() {
+class ListViewModel constructor(/*TODO inject with Koin*/private val reminderDao: ReminderDao) : ViewModel() {
     private val _deletedReminder = MutableLiveData<Reminder>()
     var deletedReminder: LiveData<Reminder> = _deletedReminder
     val allReminders: LiveData<List<Reminder>> = reminderDao.getAll()
