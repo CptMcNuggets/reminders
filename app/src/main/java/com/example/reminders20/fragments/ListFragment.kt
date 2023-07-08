@@ -21,13 +21,17 @@ import com.example.reminders20.viewModels.ListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback
 import com.google.android.material.snackbar.Snackbar
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent.inject
 
 class ListFragment : Fragment(), AdapterCallback {
 
     private lateinit var adapter: RemindersAdapter
 
     //TODO inject with Koin
-    lateinit var viewModel: ListViewModel
+    val viewModel: ListViewModel by viewModel()
 
     private fun subscribeOnViewModel() {
         viewModel.allReminders.observe(viewLifecycleOwner, Observer { reminderList ->

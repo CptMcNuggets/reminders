@@ -12,11 +12,12 @@ import com.example.reminders20.R
 import com.example.reminders20.RemindersApplication
 import com.example.reminders20.db.Reminder
 import com.example.reminders20.viewModels.NewReminderViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NewReminderFragment : Fragment() {
 
     //TODO inject with Koin
-    lateinit var viewModel: NewReminderViewModel
+    private val viewModel: NewReminderViewModel by viewModel()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
