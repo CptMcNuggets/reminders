@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +22,8 @@ import com.example.reminders20.viewModels.ListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -30,7 +33,6 @@ class ListFragment : Fragment(), AdapterCallback {
 
     private lateinit var adapter: RemindersAdapter
 
-    //TODO inject with Koin
     val viewModel: ListViewModel by viewModel()
 
     private fun subscribeOnViewModel() {
@@ -94,7 +96,7 @@ class ListFragment : Fragment(), AdapterCallback {
                                             adapter.notifyItemInserted(position)
                                         }
 
-                                        DISMISS_EVENT_TIMEOUT -> viewModel.deleteReminderWithUndo(reminder)
+                                        DISMISS_EVENT_TIMEOUT -> viewModel.deleteReminder(reminder)
                                         else -> {
                                             //ignore
                                         }

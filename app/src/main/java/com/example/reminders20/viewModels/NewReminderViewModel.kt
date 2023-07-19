@@ -3,28 +3,19 @@ package com.example.reminders20.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.reminders20.db.Reminder
 import com.example.reminders20.db.ReminderDao
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.CompletableObserver
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.launch
 
-class NewReminderViewModel constructor(/*TODO inject with Koin*/private val reminderDao: ReminderDao) : ViewModel() {
+class NewReminderViewModel constructor(private val reminderDao: ReminderDao) : ViewModel() {
     private val _reminderUpdated = MutableLiveData<Reminder?>()
     var insertedReminder: LiveData<Reminder?> = _reminderUpdated
     fun insertNewReminder(reminder: Reminder) {
-        reminderDao.insertReminder(reminder)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : CompletableObserver {
-                    override fun onSubscribe(d: Disposable) {}
-                    override fun onComplete() {
-                        _reminderUpdated.value = reminder
-                    }
-
-                    override fun onError(e: Throwable) {}
-                })
+        viewModelScope.launch {
+            reminderDao.insertReminder(reminder)
+            _reminderUpdated.value = reminder
+        }
     }
 
     fun getReminderByTimestamp(timestamp: Long): LiveData<Reminder?> {

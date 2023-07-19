@@ -3,6 +3,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
@@ -36,6 +37,7 @@ dependencies {
     def roomVersion = '2.5.2'
     def nav_version = '2.6.0'
     def koin_version= '3.4.2'
+    def coroutines_version = '1.7.2'
 
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
@@ -46,13 +48,18 @@ dependencies {
     // Koin
     implementation "io.insert-koin:koin-android:$koin_version"
     implementation "io.insert-koin:koin-core:$koin_version"
+    //Coroutines
+    implementation"org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    implementation"org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    //Room
+    implementation "androidx.room:room-common:$roomVersion"
+    implementation "androidx.room:room-runtime:$roomVersion"
+    implementation "androidx.room:room-rxjava3:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "androidx.room:room-common:$roomVersion"
-    implementation "androidx.room:room-runtime:$roomVersion"
-    implementation "androidx.room:room-rxjava3:$roomVersion"
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
     implementation 'io.reactivex.rxjava3:rxjava:3.1.5'
     testImplementation 'junit:junit:4.13.2'

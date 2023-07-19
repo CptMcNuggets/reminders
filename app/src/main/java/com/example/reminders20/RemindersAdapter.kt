@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.reminders20.db.Reminder
+import com.example.reminders20.fragments.ListFragmentDirections
 import java.util.Calendar
 
 class RemindersAdapter : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
@@ -21,13 +23,12 @@ class RemindersAdapter : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
             notifyDataSetChanged()
             return
         }
-        val sortedList = reminderList.sortedByDescending { it.timestamp }
         val calendar = Calendar.getInstance()
         val currentDayCalendar = Calendar.getInstance()
         var todayStartIndex = -1
-        var todayEndIndex = sortedList.lastIndex
+        var todayEndIndex = reminderList.lastIndex
 
-        sortedList.forEachIndexed { index, reminder ->
+        reminderList.forEachIndexed { index, reminder ->
             calendar.time = reminder.date
             if (calendar[Calendar.DAY_OF_YEAR] == currentDayCalendar[Calendar.DAY_OF_YEAR]
                 && calendar[Calendar.YEAR] == currentDayCalendar[Calendar.YEAR]) {
@@ -70,8 +71,8 @@ class RemindersAdapter : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
             itemView.setOnClickListener {
                 val reminder = list[adapterPosition] as Reminder
                 val timestamp = reminder.timestamp
-                //TODO replace with fragment
-                //findNavController(itemView).navigate(ListFragmentDirections.openNewReminderAction().setTimestamp(timestamp))
+                val action = ListFragmentDirections.openNewReminderAction(timestamp)
+                itemView.findNavController().navigate(action)
             }
         }
 

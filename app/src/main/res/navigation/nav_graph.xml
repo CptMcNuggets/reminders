@@ -19,9 +19,6 @@
         android:id="@+id/newReminderFragment"
         android:name="com.example.reminders20.fragments.NewReminderFragment"
         android:label="NewReminderFragment" >
-        <action
-            android:id="@+id/action_newReminderFragment_to_listFragment"
-            app:destination="@id/listFragment" />
         <argument
             android:name="timestamp"
             app:argType="long"

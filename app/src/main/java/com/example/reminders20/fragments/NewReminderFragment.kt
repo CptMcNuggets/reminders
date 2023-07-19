@@ -16,7 +16,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NewReminderFragment : Fragment() {
 
-    //TODO inject with Koin
     private val viewModel: NewReminderViewModel by viewModel()
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,7 +28,7 @@ class NewReminderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val inputTitle = view.findViewById<EditText>(R.id.input_title)
         val inputDescription = view.findViewById<EditText>(R.id.input_description)
-        val timestamp = 0L //NewReminderFragmentArgs.fromBundle(requireArguments()).timestamp
+        val timestamp = NewReminderFragmentArgs.fromBundle(requireArguments()).timestamp
         if (timestamp != 0L) {
             viewModel.getReminderByTimestamp(timestamp).observe(viewLifecycleOwner) { reminder ->
                 inputTitle.setText(reminder?.title)
