@@ -5,17 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.reminders20.db.Reminder
-import com.example.reminders20.fragments.ListFragmentDirections
 import java.util.Calendar
 
-class RemindersAdapter(val onClickCallback: AdapterCallback) : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
+class RemindersAdapter(val onItemClickAction: (reminder: Reminder) -> Unit) : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
+
     companion object {
         const val ITEM_REMINDER = 0
         private const val ITEM_DIVIDER = 1
     }
+
     val list: MutableList<Items> = ArrayList()
     fun updateItems(context: Context, reminderList: List<Reminder>) {
         list.clear()
@@ -68,8 +68,13 @@ class RemindersAdapter(val onClickCallback: AdapterCallback) : RecyclerView.Adap
         private val date: TextView = itemView.findViewById(R.id.date)
 
         init {
+            /*val onClickListener: (view: View) -> Unit = {
+                onItemClickAction.invoke(list[adapterPosition] as Reminder)
+            }
+            itemView.setOnClickListener(onClickListener)*/
+
             itemView.setOnClickListener {
-                onClickCallback.onItemClick(list[adapterPosition] as Reminder)
+                onItemClickAction.invoke(list[adapterPosition] as Reminder)
             }
         }
 

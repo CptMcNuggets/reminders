@@ -11,7 +11,6 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.reminders20.AdapterCallback
 import com.example.reminders20.MainActivity
 import com.example.reminders20.R
 import com.example.reminders20.RemindersAdapter
@@ -24,7 +23,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ListFragment : Fragment(), AdapterCallback {
+class ListFragment : Fragment() {
 
     private lateinit var adapter: RemindersAdapter
 
@@ -33,9 +32,10 @@ class ListFragment : Fragment(), AdapterCallback {
     private fun subscribeOnViewModel() {
         //Как сделать так, чтобы collect срабатывал только на resumed state
         lifecycleScope.launch {
-            viewModel.allRemindersFlow.collect{ reminderList ->
+            viewModel.allRemindersFlow.collect { reminderList ->
                 val context = context ?: return@collect
-                adapter.updateItems(context, reminderList)}
+                adapter.updateItems(context, reminderList)
+            }
         }
         viewModel.deletedReminder.observe(viewLifecycleOwner) { }
     }
@@ -51,7 +51,12 @@ class ListFragment : Fragment(), AdapterCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val activity = activity as MainActivity? ?: return
-        adapter = RemindersAdapter(this)
+
+        adapter = RemindersAdapter { reminder ->
+            val timestamp = reminder.timestamp
+            val action = ListFragmentDirections.openNewReminderAction(timestamp)
+            view.findNavController().navigate(action)
+        }
         val fabNewReminder = view.findViewById<FloatingActionButton>(R.id.fab_new_reminder)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -107,11 +112,5 @@ class ListFragment : Fragment(), AdapterCallback {
         itemTouchHelper.attachToRecyclerView(recyclerView)
         fabNewReminder.setOnClickListener { findNavController(view).navigate(R.id.openNewReminderAction) }
         subscribeOnViewModel()
-    }
-
-    override fun onItemClick(reminder: Reminder) {
-        val timestamp = reminder.timestamp
-        val action = ListFragmentDirections.openNewReminderAction(timestamp)
-        view?.findNavController()?.navigate(action)
     }
 }
