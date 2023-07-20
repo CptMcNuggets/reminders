@@ -9,14 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.reminders20.db.Reminder
 import java.util.Calendar
 
-class RemindersAdapter(val onItemClickAction: (reminder: Reminder) -> Unit) : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
+class RemindersAdapter(val onItemClickAction: (reminder: Reminder) -> Unit, val isReminder: (item: Item) -> Int) : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
 
     companion object {
         const val ITEM_REMINDER = 0
-        private const val ITEM_DIVIDER = 1
+        const val ITEM_DIVIDER = 1
     }
 
-    val list: MutableList<Items> = ArrayList()
+    val list: MutableList<Item> = ArrayList()
     fun updateItems(context: Context, reminderList: List<Reminder>) {
         list.clear()
         if (reminderList.isEmpty()) {
@@ -114,11 +114,7 @@ class RemindersAdapter(val onItemClickAction: (reminder: Reminder) -> Unit) : Re
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (list[position] is Reminder) {
-            ITEM_REMINDER
-        } else {
-            ITEM_DIVIDER
-        }
+        return isReminder(list[position])
     }
 
     override fun getItemCount(): Int {

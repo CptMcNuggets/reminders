@@ -11,9 +11,11 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.reminders20.Item
 import com.example.reminders20.MainActivity
 import com.example.reminders20.R
 import com.example.reminders20.RemindersAdapter
+import com.example.reminders20.RemindersAdapter.Companion.ITEM_DIVIDER
 import com.example.reminders20.RemindersAdapter.Companion.ITEM_REMINDER
 import com.example.reminders20.db.Reminder
 import com.example.reminders20.viewModels.ListViewModel
@@ -52,11 +54,19 @@ class ListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val activity = activity as MainActivity? ?: return
 
-        adapter = RemindersAdapter { reminder ->
-            val timestamp = reminder.timestamp
-            val action = ListFragmentDirections.openNewReminderAction(timestamp)
-            view.findNavController().navigate(action)
-        }
+        adapter = RemindersAdapter(
+            onItemClickAction = { reminder ->
+                val timestamp = reminder.timestamp
+                val action = ListFragmentDirections.openNewReminderAction(timestamp)
+                view.findNavController().navigate(action)
+            },
+            isReminder = { item: Item ->
+                if (item is Reminder) {
+                    ITEM_REMINDER
+                } else {
+                    ITEM_DIVIDER
+                }
+            })
         val fabNewReminder = view.findViewById<FloatingActionButton>(R.id.fab_new_reminder)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
