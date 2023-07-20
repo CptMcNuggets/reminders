@@ -2,12 +2,12 @@ package com.example.reminders20.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import io.reactivex.rxjava3.core.Completable
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ReminderDao {
     @Query("SELECT * FROM Reminder ORDER BY timestamp DESC")
-    fun getAll(): LiveData<List<Reminder>>
+    fun getAll(): Flow<List<Reminder>>
 
     @Query("SELECT * FROM Reminder WHERE timestamp = :timestamp")
     fun getReminderByTimestamp(timestamp: Long): LiveData<Reminder?>

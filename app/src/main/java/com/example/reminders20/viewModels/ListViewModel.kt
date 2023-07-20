@@ -13,9 +13,9 @@ import kotlinx.coroutines.launch
 class ListViewModel constructor(private val reminderDao: ReminderDao) : ViewModel() {
     private val _deletedReminder = MutableLiveData<Reminder>()
     var deletedReminder: LiveData<Reminder> = _deletedReminder
-    val allReminders: LiveData<List<Reminder>> = reminderDao.getAll()
+    //val allReminders: LiveData<List<Reminder>> = reminderDao.getAll()
 
-    //val allRemindersFlow: Flow<List<Reminder>> = flow { emit(reminderDao.getAll()) }
+    val allRemindersFlow: Flow<List<Reminder>> = reminderDao.getAll()
     fun deleteReminder(reminder: Reminder) {
         viewModelScope.launch {
             reminderDao.deleteReminder(reminder)

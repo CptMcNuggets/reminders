@@ -36,12 +36,15 @@ class ListFragment : Fragment(), AdapterCallback {
     val viewModel: ListViewModel by viewModel()
 
     private fun subscribeOnViewModel() {
-        viewModel.allReminders.observe(viewLifecycleOwner, Observer { reminderList ->
-            val context = context ?: return@Observer
-            adapter.updateItems(context, reminderList)
-        })
+        //Как сделать так, чтобы collect срабатывал только на resumed state
+        lifecycleScope.launch {
+            viewModel.allRemindersFlow.collect{ reminderList ->
+                val context = context ?: return@collect
+                adapter.updateItems(context, reminderList)}
+        }
         viewModel.deletedReminder.observe(viewLifecycleOwner) { }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -104,31 +107,6 @@ class ListFragment : Fragment(), AdapterCallback {
                                 }
                             })
                         }.show()
-                        /*.also { snackBar ->
-                            snackBar.setAction(R.string.undo_deletion) {
-                                snackBar.dismiss()
-                            }.addCallback(object : BaseCallback<Snackbar?>() {
-                                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                                    when (event) {
-                                        DISMISS_EVENT_ACTION -> {
-                                            adapter.list.add(position, reminder)
-                                            adapter.notifyItemInserted(position)
-                                        }
-
-                                        DISMISS_EVENT_TIMEOUT -> viewModel.deleteReminderWithUndo(reminder)
-                                        else -> {
-                                            //ignore
-                                        }
-                                    }
-                                }
-                            })
-                        }*/
-                        /*.run {
-                            this
-                        }
-                        ?.let { snackbar ->
-                           snackbar
-                        }*/
                 }
             }
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
