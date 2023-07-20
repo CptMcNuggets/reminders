@@ -11,7 +11,7 @@ import com.example.reminders20.db.Reminder
 import com.example.reminders20.fragments.ListFragmentDirections
 import java.util.Calendar
 
-class RemindersAdapter : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
+class RemindersAdapter(val onClickCallback: AdapterCallback) : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
     companion object {
         const val ITEM_REMINDER = 0
         private const val ITEM_DIVIDER = 1
@@ -69,10 +69,7 @@ class RemindersAdapter : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
 
         init {
             itemView.setOnClickListener {
-                val reminder = list[adapterPosition] as Reminder
-                val timestamp = reminder.timestamp
-                val action = ListFragmentDirections.openNewReminderAction(timestamp)
-                itemView.findNavController().navigate(action)
+                onClickCallback.onItemClick(list[adapterPosition] as Reminder)
             }
         }
 

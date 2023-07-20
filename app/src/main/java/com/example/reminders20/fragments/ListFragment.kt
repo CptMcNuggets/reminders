@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,18 +16,13 @@ import com.example.reminders20.MainActivity
 import com.example.reminders20.R
 import com.example.reminders20.RemindersAdapter
 import com.example.reminders20.RemindersAdapter.Companion.ITEM_REMINDER
-import com.example.reminders20.RemindersApplication
 import com.example.reminders20.db.Reminder
 import com.example.reminders20.viewModels.ListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.java.KoinJavaComponent.inject
 
 class ListFragment : Fragment(), AdapterCallback {
 
@@ -56,8 +51,7 @@ class ListFragment : Fragment(), AdapterCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val activity = activity as MainActivity? ?: return
-
-        adapter = RemindersAdapter()
+        adapter = RemindersAdapter(this)
         val fabNewReminder = view.findViewById<FloatingActionButton>(R.id.fab_new_reminder)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -115,7 +109,9 @@ class ListFragment : Fragment(), AdapterCallback {
         subscribeOnViewModel()
     }
 
-    override fun undoDeletion(position: Int) {
-        adapter.notifyItemChanged(position)
+    override fun onItemClick(reminder: Reminder) {
+        val timestamp = reminder.timestamp
+        val action = ListFragmentDirections.openNewReminderAction(timestamp)
+        view?.findNavController()?.navigate(action)
     }
 }

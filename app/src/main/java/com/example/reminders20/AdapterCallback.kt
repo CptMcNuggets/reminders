@@ -1,5 +1,7 @@
 package com.example.reminders20
 
+import com.example.reminders20.db.Reminder
+
 interface AdapterCallback {
-    fun undoDeletion(position: Int)
+    fun onItemClick(reminder: Reminder)
 }
